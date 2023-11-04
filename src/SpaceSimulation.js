@@ -29,8 +29,7 @@ export default class SpaceSimulation extends Component {
         "position": [0, 0],
         "velocity": [0, 0],
         "acceleration": [0, 0],
-        "diameter": 7 * 10 ** 7,
-        "fixed": false
+        "diameter": 7 * 10 ** 7
       },
       {
         "name": "M2",
@@ -38,9 +37,32 @@ export default class SpaceSimulation extends Component {
         "position": [4.055 * 10**8, 0],
         "velocity": [0, 970],
         "acceleration": [0, 0],
-        "diameter": 1.7 * 10 ** 7,
-        "fixed": false
+        "diameter": 1.7 * 10 ** 7
+      },
+      {
+        "name": "M2",
+        "mass": 1, // In kg
+        "position": [0, 4.055 * 10**8],
+        "velocity": [970, 0],
+        "acceleration": [0, 0],
+        "diameter": 5 * 10 ** 6
       }
+      // {
+      //   "name": "M2",
+      //   "mass": 7.35 * 10 ** 22, // In kg
+      //   "position": [-4.055 * 10**8, 0],
+      //   "velocity": [0, -970],
+      //   "acceleration": [0, 0],
+      //   "diameter": 1.7 * 10 ** 7
+      // },
+      // {
+      //   "name": "M2",
+      //   "mass": 7.35 * 10 ** 22, // In kg
+      //   "position": [0, -4.055 * 10**8],
+      //   "velocity": [970, 0],
+      //   "acceleration": [0, 0],
+      //   "diameter": 1.7 * 10 ** 7
+      // }
     ];
 
     // Angle and rate at which the angle of the second planet increases
@@ -101,6 +123,8 @@ export default class SpaceSimulation extends Component {
         p5.fill(0, 200, 200)
       } else if(i == 1){
         p5.fill(200, 0, 200)
+      } else {
+        p5.fill(255, 0, 0)
       }
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
