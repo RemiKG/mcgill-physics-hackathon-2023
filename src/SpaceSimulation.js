@@ -18,7 +18,6 @@ export default class SpaceSimulation extends Component {
         p5.createCanvas(window.innerWidth, window.innerHeight)
          // Set a flag to indicate that the canvas has been created
     }
-    this.canvasCreated = true;
     
     this.height = window.innerHeight;
     this.width = window.innerWidth;
@@ -104,8 +103,16 @@ export default class SpaceSimulation extends Component {
       }
       // this.comX = (this.objects[0]["position"][0] * )/()
       p5.circle((this.objects[i]["position"][0] - (this.objects[0]["position"][0] + this.objects[1]["position"][0]*this.objects)) / this.m_per_pixel, (this.objects[i]["position"][1] - this.objects[0]["position"][1])/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)  
-      // Energy
       
+      // Monitor total energy : Energy = Kinetic energy + Potential energy
+        // if(i==0){
+        //   this.energy = 1/2 * this.objects[0]['mass'] * Math.sqrt(this.objects[0]['velocity'][0]**2+this.objects[0]['velocity'][1]**2)  + this.objects[0]['mass'] * this.total_a * this.r
+        //   console.log(
+        //     "energy", this.energy,
+        //     this.objects[0]['mass'],
+        //     this.objects[0]['velocity'],
+        //     this.objects[0]['mass'],
+        //     this.r)
       
       this.kinetic += this.objects[i]["mass"] * (this.objects[i]["velocity"][0] **2 + this.objects[i]["velocity"][1]**2)/2
       
