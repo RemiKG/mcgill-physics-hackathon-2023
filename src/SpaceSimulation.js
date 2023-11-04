@@ -102,8 +102,10 @@ export default class SpaceSimulation extends Component {
       } else if(i == 1){
         p5.fill(200, 0, 200)
       }
-      // this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[0]["position"])
-      p5.circle((this.objects[i]["position"][0] - (this.objects[0]["position"][0])) / this.m_per_pixel, (this.objects[i]["position"][1] - this.objects[0]["position"][1])/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)  
+      this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
+      this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
+    
+      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)  
       
       // Monitor total energy : Energy = Kinetic energy + Potential energy
         // if(i==0){
