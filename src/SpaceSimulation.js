@@ -123,13 +123,14 @@ export default class SpaceSimulation extends Component {
     }
 
     // draw stars
-    if (Math.random() > 0.95 && step >= 2.5) {
+    if (Math.random() > 0.95 && this.step >= 2.5) {
       this.fromX = Math.random(this.width);
       this.fromY = Math.random(this.height / 2);
       this.toX = Math.random(this.fromX + 10, this.width);
       this.toY = Math.random(this.fromY + 10, this.height / 2);
       this.step = 0;
     }
+    p5.noStroke();
     if (!this.state.simulationStarted) {
       p5.translate(this.width/2, this.height/2);
       p5.fill(25, 25, 25, 35)
@@ -164,8 +165,8 @@ export default class SpaceSimulation extends Component {
     p5.frameRate(this.fr);
   
     // p5.background(25, 25, 250,0.99);
-    p5.fill(25, 25, 25, 35)
-    p5.rect(-this.width/2, -this.height/2, this.width, this.height)
+    // p5.fill(25, 25, 25, 35)
+    // p5.rect(-this.width/2, -this.height/2, this.width, this.height)
 
     // console.log(this.objects.length)
 
@@ -217,7 +218,8 @@ export default class SpaceSimulation extends Component {
       } else if(i == 1){
         p5.fill(200, 0, 200)
       } else {
-        p5.fill(255, 0, 0)
+        // p5.fill(255, 0, 0)
+        p5.fill(255, 255, 0)
       }
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
