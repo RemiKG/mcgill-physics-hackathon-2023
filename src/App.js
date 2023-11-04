@@ -26,8 +26,8 @@ export default class App extends Component {
       {
         "name": "M2",
         "mass": 7.35 * 10**22, // In kg
-        "position": [3.84*10**8, 0],
-        "velocity": [0, (1000)],
+        "position": [4.055 * 10**8, 0],
+        "velocity": [0, (970)],
         "acceleration": [0, 0],
         "diameter": 1.7*10**7,
         "fixed": false
