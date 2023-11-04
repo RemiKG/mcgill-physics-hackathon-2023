@@ -52,3 +52,10 @@ body{
     transform: rotate(360deg);
   }
 }
+
+.userParamsContainer {
+  position: absolute;
+  top: 0px;
+  left: -900px;
+  padding: 10px; /* Add padding to create some space from the top and left edges */
+}

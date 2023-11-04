@@ -3,6 +3,7 @@ import Sketch from "react-p5";
 import rocketImg from './rocket.png';
 import RangeSlider from 'react-range-slider-input';
 import InputSlider from "react-input-slider";
+import {wait} from "@testing-library/user-event/dist/utils";
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ export default class SpaceSimulation extends Component {
       massM2: 7.35 * 10 ** 22, // Initial mass of M2 in kg
       massM2Multiplier: 1, // Multiplier to change mass of M2
       sliderValue2: 1,
+      simulationStarted: false,
     };
   }
 
@@ -71,7 +73,7 @@ export default class SpaceSimulation extends Component {
     ];
 
     // Angle and rate at which the angle of the second planet increases
-   
+
 
     this.s_per_frame = 3*10 ** (3);
     this.m_per_pixel = 10 ** 6;
@@ -79,7 +81,12 @@ export default class SpaceSimulation extends Component {
     p5.background(25, 25, 25);
   };
   draw = p5 => {
+    if (!this.state.simulationStarted) {
+      // this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[0]["position"])
+      //p5.circle((this.objects[i]["position"][0] - (this.objects[0]["position"][0])) / this.m_per_pixel, (this.objects[i]["position"][1] - this.objects[0]["position"][1]) / this.m_per_pixel, this.objects[i]["diameter"] / this.m_per_pixel)
 
+      return;
+    }
     this.kinetic = 0
     this.potential = 0
     this.t += 1;
@@ -134,8 +141,8 @@ export default class SpaceSimulation extends Component {
       }
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
-    
-      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)  
+
+      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       p5.image(this.rocket, this.objects[i]["position"][0]/ this.m_per_pixel -this.rocket.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.rocket.height/2); // draw the image
       // Monitor total energy : Energy = Kinetic energy + Potential energy
         // if(i==0){
@@ -158,66 +165,79 @@ export default class SpaceSimulation extends Component {
 
     };
 
-    handleMass1Change = (value) => {
-        const newValue = parseFloat(value.x);
+  handleMass1Change = (value) => {
+    const newValue = parseFloat(value.x);
 
-        this.setState({ sliderValue: newValue });
-        this.setState({ massM1Multiplier: newValue });
-    
-        if (newValue === 1) {
-          this.objects[0].mass = 6 * 10 ** 24;
-        } else if (newValue > 0) {
-          this.objects[0].mass = (6 * 10 ** 24) * newValue;
-        } else if (newValue < 0) {
-          this.objects[0].mass = (6 * 10 ** 24) / (newValue);
-        }
-      };
-    
-      handleMass2Change = (value) => {
-        const newValue = parseFloat(value.x);
+    this.setState({ sliderValue: newValue });
+    this.setState({ massM1Multiplier: newValue });
 
-        this.setState({ sliderValue2: newValue });
-        this.setState({ massM2Multiplier: newValue });
+    if (newValue === 1) {
+      this.objects[0].mass = 6 * 10 ** 24;
+    } else if (newValue > 0) {
+      this.objects[0].mass = (6 * 10 ** 24) * newValue;
+    } else if (newValue < 0) {
+      this.objects[0].mass = (6 * 10 ** 24) / (newValue);
+    }
+  };
     
-        if (newValue === 1) {
-          this.objects[1].mass = 7.35 * 10 ** 22;
-        } else if (newValue > 0) {
-          this.objects[1].mass = (7.35 * 10 ** 22) * newValue;
-        } else if (newValue < 0) {
-          this.objects[1].mass = (7.35 * 10 ** 22) / (newValue);
-        }
-      };
+  handleMass2Change = (value) => {
+    const newValue = parseFloat(value.x);
+
+    this.setState({ sliderValue2: newValue });
+    this.setState({ massM2Multiplier: newValue });
+
+    if (newValue === 1) {
+      this.objects[1].mass = 7.35 * 10 ** 22;
+    } else if (newValue > 0) {
+      this.objects[1].mass = (7.35 * 10 ** 22) * newValue;
+    } else if (newValue < 0) {
+      this.objects[1].mass = (7.35 * 10 ** 22) / (newValue);
+    }
+  };
     
-      resetSimulation = () => {
-        window.location.reload();
-      }
+  resetSimulation = () => {
+    window.location.reload();
+  }
+
+  startSimulation = () => {
+    this.setState({ simulationStarted: true });
+    this.draw()
+  }
+
+  pauseSimulation = () => {
+    this.setState({ simulationStarted: false });
+  }
 
   render() {
     return (
       <div class="contain">
-        <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
-        <p>Multiplier for mass M1 : {this.state.sliderValue}x the mass&nbsp;
-        </p>
-        <InputSlider
-            axis="x"
-            x={this.state.sliderValue}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleMass1Change}
-            id={this.state.massM1Multiplier}
-        />
-        <p>Multiplier for mass M2 : {this.state.massM2Multiplier}x the mass&nbsp;
-        </p>
-        <InputSlider
-            axis="x"
-            x={this.state.sliderValue2}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleMass2Change}
-            id={this.state.massM2Multiplier}
-        />
+        <div className="userParamsContainer">
+          <p>Start the simulation : <button onClick={this.startSimulation}>START</button></p>
+          <p>Pause the simulation : <button onClick={this.pauseSimulation}>PAUSE</button></p>
+          <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
+          <p>Multiplier for mass M1 : {(Math.round(this.state.sliderValue* 100) / 100).toFixed(2)}x the mass&nbsp;
+          </p>
+          <InputSlider
+              axis="x"
+              x={this.state.sliderValue}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleMass1Change}
+              id={this.state.massM1Multiplier}
+          />
+          <p>Multiplier for mass M2 : {(Math.round(this.state.massM2Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
+          </p>
+          <InputSlider
+              axis="x"
+              x={this.state.sliderValue2}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleMass2Change}
+              id={this.state.massM2Multiplier}
+          />
+        </div>
         <Sketch setup={this.setup} draw={this.draw} />
         <br></br>
       </div>
