@@ -14,11 +14,12 @@ export default class SpaceSimulation extends Component {
   }
 
   setup = (p5) => {
-    this.canvasCreated = true;
     if (!this.canvasCreated) {
         p5.createCanvas(window.innerWidth, window.innerHeight)
          // Set a flag to indicate that the canvas has been created
-      }
+    }
+    this.canvasCreated = true;
+    
     this.height = window.innerHeight;
     this.width = window.innerWidth;
     // Orbital Section
