@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Sketch from "react-p5";
 import rocketImg from './rocket.png';
+import earthImg from './earth-transparent-png-9.png';
+import moonImg from './full-moon-transparent-background-7.png'
 import RangeSlider from 'react-range-slider-input';
 import InputSlider from "react-input-slider";
 import {wait} from "@testing-library/user-event/dist/utils";
@@ -24,6 +26,8 @@ export default class SpaceSimulation extends Component {
         p5.createCanvas(window.innerWidth, window.innerHeight)
          // Set a flag to indicate that the canvas has been created
         this.rocket = p5.loadImage(rocketImg)
+        this.earth = p5.loadImage(earthImg)
+        this.moon = p5.loadImage(moonImg)
         }
     
     this.height = window.innerHeight;
@@ -36,7 +40,8 @@ export default class SpaceSimulation extends Component {
         "position": [0, 0],
         "velocity": [0, 0],
         "acceleration": [0, 0],
-        "diameter": 7 * 10 ** 7
+        "diameter": 7 * 10 ** 7,
+        "image": p5.loadImage(earthImg)
       },
       {
         "name": "M2",
@@ -45,7 +50,8 @@ export default class SpaceSimulation extends Component {
         "position": [4.055 * 10**8, 0],
         "velocity": [0, 970],
         "acceleration": [0, 0],
-        "diameter": 1.7 * 10 ** 7
+        "diameter": 1.7 * 10 ** 7,
+        "image": p5.loadImage(moonImg)
       },
       {
         "name": "rocket",
@@ -54,7 +60,8 @@ export default class SpaceSimulation extends Component {
         // "velocity": [-2040, 0],
         "velocity": [2540, 0],
         "acceleration": [0, 0],
-        "diameter": 5 * 10 ** 6
+        "diameter": 5 * 10 ** 6,
+        "image": p5.loadImage(rocketImg)
       }
       // {
       //   "name": "M2",
@@ -169,7 +176,11 @@ export default class SpaceSimulation extends Component {
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+      //p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+      
+      p5.image(this.objects[i]["image"], this.objects[i]["position"][0]/ this.m_per_pixel -this.earth.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.earth.height/2);
+      
+      
       //p5.image(this.rocket, this.objects[i]["position"][0]/ this.m_per_pixel -this.rocket.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.rocket.height/2); // draw the image
       // Monitor total energy : Energy = Kinetic energy + Potential energy
         // if(i==0){
