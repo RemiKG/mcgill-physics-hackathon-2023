@@ -176,21 +176,28 @@ export default class SpaceSimulation extends Component {
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-      //p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       
-      p5.image(this.objects[i]["image"], this.objects[i]["position"][0]/ this.m_per_pixel -this.earth.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.earth.height/2);
-      
-      
-      //p5.image(this.rocket, this.objects[i]["position"][0]/ this.m_per_pixel -this.rocket.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.rocket.height/2); // draw the image
+     
+      // Rocket image
+      // let velocity = this.objects[i]["velocity"];
+      // let angle = Math.atan2(velocity[1], velocity[0]);
+      // p5.push();
+      // p5.translate((this.objects[i]["position"][0]- this.comX)/this.m_per_pixel, (this.objects[i]["position"][1]- this.comY)/this.m_per_pixel);
+      // p5.rotate(angle-12.5);
+      // p5.imageMode(p5.CENTER);
+      // p5.image(this.objects[i]["image"], -this.objects[i]["image"].width/2, -this.objects[i]["image"].height/2);
+      // p5.pop();  
+            
       // Monitor total energy : Energy = Kinetic energy + Potential energy
-        // if(i==0){
-        //   this.energy = 1/2 * this.objects[0]['mass'] * Math.sqrt(this.objects[0]['velocity'][0]**2+this.objects[0]['velocity'][1]**2)  + this.objects[0]['mass'] * this.total_a * this.r
-        //   console.log(
-        //     "energy", this.energy,
-        //     this.objects[0]['mass'],
-        //     this.objects[0]['velocity'],
-        //     this.objects[0]['mass'],
-        //     this.r)
+      //   if(i==0){
+      //     this.energy = 1/2 * this.objects[0]['mass'] * Math.sqrt(this.objects[0]['velocity'][0]**2+this.objects[0]['velocity'][1]**2)  + this.objects[0]['mass'] * this.total_a * this.r
+      //     console.log(
+      //       "energy", this.energy,
+      //       this.objects[0]['mass'],
+      //       this.objects[0]['velocity'],
+      //       this.objects[0]['mass'],
+      //       this.r)
       
       this.kinetic += this.objects[i]["mass"] * (this.objects[i]["velocity"][0] **2 + this.objects[i]["velocity"][1]**2)/2
       
