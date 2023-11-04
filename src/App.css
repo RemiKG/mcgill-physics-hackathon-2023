@@ -10,13 +10,6 @@ body{
   width : 100%;
   overflow: hidden;
 }
-.contain{
-  background: transparent;
-  color: white;
-  position: absolute;
-  left: 50%;
-  translate: -50%;
-}
 
 .App-logo {
   height: 40vmin;
@@ -51,4 +44,18 @@ body{
   to {
     transform: rotate(360deg);
   }
+}
+
+.contain{
+  background: transparent;
+  color: white;
+  position: relative;
+}
+.userParamsContainer {
+  position: absolute;
+  top: 0px;
+  /* left: -900px; */
+  left: 0px;
+  padding: 50px; /* Add padding to create some space from the top and left edges */
+  /* padding-left: 100px; */
 }
