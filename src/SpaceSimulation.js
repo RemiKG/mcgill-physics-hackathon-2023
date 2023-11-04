@@ -21,7 +21,8 @@ export default class SpaceSimulation extends Component {
     if (!this.canvasCreated) {
         p5.createCanvas(window.innerWidth, window.innerHeight)
          // Set a flag to indicate that the canvas has been created
-    }
+        this.rocket = p5.loadImage(rocketImg)
+        }
     
     this.height = window.innerHeight;
     this.width = window.innerWidth;
@@ -70,7 +71,7 @@ export default class SpaceSimulation extends Component {
     ];
 
     // Angle and rate at which the angle of the second planet increases
-    this.rocketImg = p5.loadImage(rocketImg);
+   
 
     this.s_per_frame = 3*10 ** (3);
     this.m_per_pixel = 10 ** 6;
@@ -78,6 +79,7 @@ export default class SpaceSimulation extends Component {
     p5.background(25, 25, 25);
   };
   draw = p5 => {
+
     this.kinetic = 0
     this.potential = 0
     this.t += 1;
@@ -134,7 +136,7 @@ export default class SpaceSimulation extends Component {
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
     
       p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)  
-      
+      p5.image(this.rocket, this.objects[i]["position"][0]/ this.m_per_pixel -this.rocket.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.rocket.height/2); // draw the image
       // Monitor total energy : Energy = Kinetic energy + Potential energy
         // if(i==0){
         //   this.energy = 1/2 * this.objects[0]['mass'] * Math.sqrt(this.objects[0]['velocity'][0]**2+this.objects[0]['velocity'][1]**2)  + this.objects[0]['mass'] * this.total_a * this.r
@@ -152,6 +154,7 @@ export default class SpaceSimulation extends Component {
     this.potential = -this.objects[0]["mass"] * this.objects[1]["mass"] * 6.6743 * Math.pow(10, -11) / Math.sqrt((this.objects[0]["position"][0] - this.objects[1]["position"][0])**2 + (this.objects[0]["position"][1] - this.objects[1]["position"][1])**2)
     //console.log(this.kinetic + this.potential)
     p5.fill(255, 255, 255)
+
 
     };
 
