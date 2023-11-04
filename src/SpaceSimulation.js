@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Sketch from "react-p5";
 import rocketImg from './rocket.png';
+import RangeSlider from 'react-range-slider-input';
+import InputSlider from "react-input-slider";
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -8,8 +10,10 @@ export default class SpaceSimulation extends Component {
     this.state = {
       massM1: 6 * 10 ** 24, // Initial mass of M1 in kg
       massM1Multiplier: 1, // Multiplier to change mass of M1
+      sliderValue: 1,
       massM2: 7.35 * 10 ** 22, // Initial mass of M2 in kg
       massM2Multiplier: 1, // Multiplier to change mass of M2
+      sliderValue2: 1,
     };
   }
 
@@ -120,34 +124,38 @@ export default class SpaceSimulation extends Component {
       // console.log(this.kinetic)
     }
     this.potential = -this.objects[0]["mass"] * this.objects[1]["mass"] * 6.6743 * Math.pow(10, -11) / Math.sqrt((this.objects[0]["position"][0] - this.objects[1]["position"][0])**2 + (this.objects[0]["position"][1] - this.objects[1]["position"][1])**2)
-    console.log(this.kinetic + this.potential)
+    //console.log(this.kinetic + this.potential)
     p5.fill(255, 255, 255)
 
     };
 
-    handleMass1Change = (event) => {
-        const newValue = parseFloat(event.target.value);
+    handleMass1Change = (value) => {
+        const newValue = parseFloat(value.x);
+
+        this.setState({ sliderValue: newValue });
         this.setState({ massM1Multiplier: newValue });
     
-        if (newValue === 0) {
+        if (newValue === 1) {
           this.objects[0].mass = 6 * 10 ** 24;
         } else if (newValue > 0) {
           this.objects[0].mass = (6 * 10 ** 24) * newValue;
         } else if (newValue < 0) {
-          this.objects[0].mass = (6 * 10 ** 24) * newValue;
+          this.objects[0].mass = (6 * 10 ** 24) / (newValue);
         }
       };
     
-      handleMass2Change = (event) => {
-        const newValue = parseFloat(event.target.value);
+      handleMass2Change = (value) => {
+        const newValue = parseFloat(value.x);
+
+        this.setState({ sliderValue2: newValue });
         this.setState({ massM2Multiplier: newValue });
     
-        if (newValue === 0) {
+        if (newValue === 1) {
           this.objects[1].mass = 7.35 * 10 ** 22;
         } else if (newValue > 0) {
           this.objects[1].mass = (7.35 * 10 ** 22) * newValue;
         } else if (newValue < 0) {
-          this.objects[1].mass = (7.35 * 10 ** 22) * newValue;
+          this.objects[1].mass = (7.35 * 10 ** 22) / (newValue);
         }
       };
     
@@ -159,22 +167,28 @@ export default class SpaceSimulation extends Component {
     return (
       <div class="contain">
         <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
-        <p>Multiplier for mass M1 : {this.state.massM1Multiplier}x the mass&nbsp;	 
-          <input
-            type="number"
-            step="0.1"
-            value={this.state.massM1Multiplier}
+        <p>Multiplier for mass M1 : {this.state.sliderValue}x the mass&nbsp;
+        </p>
+        <InputSlider
+            axis="x"
+            x={this.state.sliderValue}
+            xmin={0}
+            xmax={10}
+            xstep={0.1}
             onChange={this.handleMass1Change}
-          />
+            id={this.state.massM1Multiplier}
+        />
+        <p>Multiplier for mass M2 : {this.state.massM2Multiplier}x the mass&nbsp;
         </p>
-        <p>Multiplier for mass M2 : {this.state.massM2Multiplier}x the mass&nbsp;	 
-          <input
-            type="number"
-            step="0.1"
-            value={this.state.massM2Multiplier}
+        <InputSlider
+            axis="x"
+            x={this.state.sliderValue2}
+            xmin={0}
+            xmax={10}
+            xstep={0.1}
             onChange={this.handleMass2Change}
-          />
-        </p>
+            id={this.state.massM2Multiplier}
+        />
         <Sketch setup={this.setup} draw={this.draw} />
         <br></br>
       </div>
