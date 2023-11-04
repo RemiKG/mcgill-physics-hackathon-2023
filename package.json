@@ -10,6 +10,7 @@
     "react-dom": "^18.2.0",
     "react-input-slider": "^6.0.1",
     "react-p5": "^1.4.1",
+    "react-range-slider-input": "^3.0.7",
     "react-scripts": "^3.0.1",
     "web-vitals": "^2.1.4"
   },
