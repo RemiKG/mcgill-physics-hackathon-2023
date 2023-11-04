@@ -14,9 +14,9 @@ export default class SpaceSimulation extends Component {
       massM2: 7.35 * 10 ** 22, // Initial mass of M2 in kg
       massM2Multiplier: 1, // Multiplier to change mass of M2
       sliderValue2: 1,
+      propulsion: false
     };
   }
-
   setup = (p5) => {
     if (!this.canvasCreated) {
         p5.createCanvas(window.innerWidth, window.innerHeight)
@@ -37,17 +37,19 @@ export default class SpaceSimulation extends Component {
       },
       {
         "name": "M2",
-        "mass": 7.35 * 10 ** 22, // In kg
+        // "mass": 7.35 * 10 ** 22, // In kg
+        "mass": 11.35 * 10 ** 22, // In kg
         "position": [4.055 * 10**8, 0],
         "velocity": [0, 970],
         "acceleration": [0, 0],
         "diameter": 1.7 * 10 ** 7
       },
       {
-        "name": "M2",
+        "name": "rocket",
         "mass": 1, // In kg
-        "position": [0, 4.055 * 10**8],
-        "velocity": [970, 0],
+        "position": [0, -8.429 * 10**7],
+        // "velocity": [-2040, 0],
+        "velocity": [2540, 0],
         "acceleration": [0, 0],
         "diameter": 5 * 10 ** 6
       }
@@ -72,8 +74,20 @@ export default class SpaceSimulation extends Component {
     // Angle and rate at which the angle of the second planet increases
     this.rocketImg = p5.loadImage(rocketImg);
 
-    this.s_per_frame = 3*10 ** (3);
+    this.s_per_frame = 10 ** (3);
     this.m_per_pixel = 10 ** 6;
+
+    // Rocket Section!
+    document.body.onkeyup = (e) => {
+      if (e.key == " " ||
+        e.code == "Space"
+      ) {
+        
+        this.setState({propulsion: !this.state.propulsion})
+        console.log(this.state.propulsion)
+      }
+    }
+    this.rocketAcceleration = 1;
 
     p5.background(25, 25, 25);
   };
@@ -108,6 +122,19 @@ export default class SpaceSimulation extends Component {
           // console.log(this.total_a)
           this.objects[i]["acceleration"][0] += this.total_a * this.d_x / (this.r)
           this.objects[i]["acceleration"][1] += this.total_a * this.d_y / (this.r) 
+        }
+      }
+      // ROCKET PROPULSION CALCULATION
+      if(this.objects[i]["name"] === "rocket"){
+        // console.log(this.state.propulsion)
+        if(this.state.propulsion){
+          console.log("PROPULSE!")
+          this.tot_v = Math.sqrt(this.objects[i]["velocity"][0]**2 + this.objects[i]["velocity"][1] **2 )
+          this.d_vx = this.objects[i]["velocity"][0] / this.tot_v
+          this.d_vy = this.objects[i]["velocity"][1] / this.tot_v
+
+          this.objects[i]["velocity"][0] += this.rocketAcceleration * this.d_vx
+          this.objects[i]["velocity"][1] += this.rocketAcceleration * this.d_vy
         }
       }
       // Change velocity according to acceleration
@@ -152,6 +179,8 @@ export default class SpaceSimulation extends Component {
     this.potential = -this.objects[0]["mass"] * this.objects[1]["mass"] * 6.6743 * Math.pow(10, -11) / Math.sqrt((this.objects[0]["position"][0] - this.objects[1]["position"][0])**2 + (this.objects[0]["position"][1] - this.objects[1]["position"][1])**2)
     //console.log(this.kinetic + this.potential)
     p5.fill(255, 255, 255)
+    
+
 
     };
 
@@ -215,6 +244,7 @@ export default class SpaceSimulation extends Component {
             onChange={this.handleMass2Change}
             id={this.state.massM2Multiplier}
         />
+        <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
         <Sketch setup={this.setup} draw={this.draw} />
         <br></br>
       </div>
