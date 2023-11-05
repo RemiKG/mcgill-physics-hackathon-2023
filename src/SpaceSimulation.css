@@ -6,3 +6,15 @@ button {
     cursor: pointer;
     outline: none;
 }
+
+.popUp {
+    position: absolute;
+    right: 35%;
+    left: 25%;
+    top: 50%;
+    width: 50%;
+}
+
+.popUp > h1 {
+    color: red;
+}

@@ -11,6 +11,13 @@ body{
   overflow: hidden;
 }
 
+.App {
+  top: 0;
+  margin: 0;
+  padding: 0;
+  height: 20px;
+}
+
 
 div > h1 {
     color: white;
@@ -21,7 +28,7 @@ div > h1 {
     padding: 0;
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     position: absolute;
-    top: 9%;
+    top: 8%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
@@ -63,11 +70,12 @@ div > h1 {
 }
 
 .contain{
-  
   color: white;
   position: absolute;
-  padding: 200pxvh;
+  padding: 200px;
   height: 100%;
+  top :0%;
+  transform: translateY(-15%) translateX(-20%);
   background-color:transparent;
 }
 .userParamsContainer {
@@ -85,9 +93,9 @@ div > h1 {
   padding-top: 10px;
   /* padding-left: 100px; */
 }
-.userParamsContainer:hover{
+/* .userParamsContainer:hover{
   border: 1px rgba(255, 255, 255, 0.5) solid !important;
-}
+} */
 #button-contain{
   min-width: 300px;
   margin-top: 70px;
@@ -107,4 +115,11 @@ div > h1 {
 }
 .button:hover{
   background-color: rgb(57, 186, 209);
+}
+
+.madeBy {
+  position: absolute;
+  background: white;
+  width: 100%;
+  height: 20px;
 }

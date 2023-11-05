@@ -5,6 +5,7 @@ import earthImg from './earth-transparent-png-9.png';
 import moonImg from './full-moon-transparent-background-7.png'
 import InputSlider from "react-input-slider";
 import './SpaceSimulation.css'
+import {wait} from "@testing-library/user-event/dist/utils";
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -21,7 +22,9 @@ export default class SpaceSimulation extends Component {
       centerFrame: false,
       infiniSpace: false,
       moreRockets: false,
-      images: []
+      images: [],
+      popUpActive: false,
+      popUpMessage: ""
     };
   }
   stars = [];
@@ -141,7 +144,7 @@ export default class SpaceSimulation extends Component {
     ],
     [
       {
-        "name": "M1",
+        "name": "",
         "mass": 6 * 10 ** 24, // In kg
         "position": [0, 0],
 
@@ -152,7 +155,7 @@ export default class SpaceSimulation extends Component {
 
       },
       {
-        "name": "M2",
+        "name": "",
         "mass": 6 * 10 ** 24, // In kg
         // "mass": 11.35 * 10 ** 22, // In kg
         "position": [4.055 * 10 ** 8, 0],
@@ -164,13 +167,13 @@ export default class SpaceSimulation extends Component {
 
       },
       {
-        "name": "rocket",
+        "name": "",
         "mass": 7.35 * 10 ** 22, // In kg
         "position": [0, -7 * 10 ** 7],
         "velocity": [2040, 0],
         "acceleration": [0, 0],
         "color": [255, 255, 0],
-        "diameter": 3.5 * 10 ** 6,
+        "diameter": 7 * 10 ** 7
       }
     ]
   ]
@@ -184,8 +187,8 @@ export default class SpaceSimulation extends Component {
       // this.earthImage = p5.loadImage(earthImg)
       // this.moonImage = p5.loadImage(moonImg)
       this.setState({images: [p5.loadImage(rocketImg),
-        p5.loadImage(earthImg), p5.loadImage(moonImg) 
-        ]}) 
+        p5.loadImage(earthImg), p5.loadImage(moonImg)
+        ]})
     }
     this.height = window.innerHeight;
     this.width = window.innerWidth;
@@ -251,7 +254,7 @@ export default class SpaceSimulation extends Component {
           this.selectedImage = this.state.images[1];
         }
         else if(this.objects[i]["name"] === "M2"){
-          this.selectedImage = this.state.images[2];         
+          this.selectedImage = this.state.images[2];
         } else{
           this.makeImage = false
           if (this.state.centerFrame) {
@@ -262,7 +265,12 @@ export default class SpaceSimulation extends Component {
         }
         if(this.makeImage){ 
           this.velocity = this.objects[i]["velocity"];
+          if(this.objects[i]["name"]=="M1"){
+          this.angle = Math.atan2(this.objects[i]["position"][1] - this.objects[1]["position"][1], this.objects[i]["position"][0] - this.objects[1]["position"][0]);
+          }else{
           this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
+          }
+          
           p5.push();
           
           p5.translate((this.objects[i]["position"][0] / this.m_per_pixel), (this.objects[i]["position"][1] / this.m_per_pixel))
@@ -272,8 +280,14 @@ export default class SpaceSimulation extends Component {
           
           //  Here
           p5.imageMode(p5.CENTER);
-          this.rotatedcomX = (this.comX) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
-          this.rotatedcomY = - (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
+
+          if (this.state.centerFrame) { 
+            this.rotatedcomX = (this.comX) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
+            this.rotatedcomY = - (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
+          } else {
+            this.rotatedcomX = (this.width/2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.height/2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
+            this.rotatedcomY = - (this.width/2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.height/2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
+          }
           p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
           p5.pop();
 
@@ -312,7 +326,7 @@ export default class SpaceSimulation extends Component {
           // console.log(this.total_a)
           this.objects[i]["acceleration"][0] += this.total_a * this.d_x / (this.r)
           this.objects[i]["acceleration"][1] += this.total_a * this.d_y / (this.r)
-          
+
         }
       }
       // ROCKET PROPULSION CALCULATION
@@ -355,15 +369,15 @@ export default class SpaceSimulation extends Component {
           }
           else if (this.tempX < -this.tempWidth / 2) {
             this.objects[i]["position"][0] = this.tempWidth / 2 - this.comX
-            // this.objects[i]["positions"][0] = this.tempWidth / 2          
+            // this.objects[i]["positions"][0] = this.tempWidth / 2
           }
           if (this.tempY > this.tempHeight / 2) {
             this.objects[i]["position"][1] = -this.tempHeight / 2 - this.comY
-            // this.objects[i]["position"][1] = -this.tempHeight / 2 
+            // this.objects[i]["position"][1] = -this.tempHeight / 2
           }
           else if (this.tempY < -this.tempHeight / 2) {
             this.objects[i]["position"][1] = this.tempHeight / 2 - this.comY
-            // this.objects[i]["position"][1] = this.tempHeight / 2           
+            // this.objects[i]["position"][1] = this.tempHeight / 2
           }
         } else {
           this.tempX = this.objects[i]["position"][0]
@@ -395,22 +409,6 @@ export default class SpaceSimulation extends Component {
       }
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
-
-
-      // p5.circle((this.objects[i]["prev-position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["prev-position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
-      // p5.fill(255, 255, 255)
-      // p5.circle((this.objects[i]["position"][0]) / this.m_per_pixel, (this.objects[i]["position"][1] )/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
-      
-      
-      // if (this.state.centerFrame) {
-      //   p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
-      // } else {
-      //   p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
-      // }
-      
-
-      // p5.circle((this.objects[i]["prev-position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["prev-position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
-
         this.makeImage = true
         if(this.objects[i]["name"] === "rocket"){
           this.selectedImage = this.state.images[0];
@@ -419,7 +417,7 @@ export default class SpaceSimulation extends Component {
           this.selectedImage = this.state.images[1];
         }
         else if(this.objects[i]["name"] === "M2"){
-          this.selectedImage = this.state.images[2];         
+          this.selectedImage = this.state.images[2];
         } else{
           this.makeImage = false
           if (this.state.centerFrame) {
@@ -430,37 +428,30 @@ export default class SpaceSimulation extends Component {
         }
         if(this.makeImage){ 
           this.velocity = this.objects[i]["velocity"];
-          if(i !== 0){
-            this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
-
+          if(this.objects[i]["name"]=="M1"){
+          this.angle = Math.atan2(this.objects[i]["position"][1] - this.objects[1]["position"][1], this.objects[i]["position"][0] - this.objects[1]["position"][0]);
           }else{
-            
-            this.angle = Math.atan2(this.objects[0]["position"][1] - this.objects[1]["position"][1], this.objects[0]["position"][0] - this.objects[1]["position"][0]);
+          this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
           }
           
           p5.push();
           
-          
+          p5.translate((this.objects[i]["position"][0] / this.m_per_pixel), (this.objects[i]["position"][1] / this.m_per_pixel))
           this.scaleFactor = this.objects[i]["diameter"] / this.m_per_pixel / this.selectedImage.width
-          this.scaleFactor2 = this.objects[i]["diameter"] / this.m_per_pixel / this.selectedImage.height
-          if(this.state.centerFrame){
-            p5.translate(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel) , ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel))
-          } else{
-            p5.translate((this.objects[i]["position"][0] / this.m_per_pixel) , ((this.objects[i]["position"][1]) / this.m_per_pixel))
-          }
-          
           p5.scale(this.scaleFactor)
           p5.rotate(this.angle + p5.PI / 4);
+          
+          //  Here
           p5.imageMode(p5.CENTER);
-          if(this.state.centerFrame){
+
+          if (this.state.centerFrame) { 
             this.rotatedcomX = (this.comX) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
-            this.rotatedcomY = - (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)  
+            this.rotatedcomY = - (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
           } else {
-            this.rotatedcomX = (this.width / 2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.width / 2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
-            this.rotatedcomY = - (this.height / 2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.height / 2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
+            this.rotatedcomX = (this.width/2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.height/2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
+            this.rotatedcomY = - (this.width/2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.height/2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
           }
           p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
-          
           p5.pop();
 
         }
@@ -528,7 +519,16 @@ export default class SpaceSimulation extends Component {
     }
   };
 
-  handleDistanceChange = (value) => {
+    popUp = async (message) => {
+        this.setState({ popUpActive: true });
+        this.setState({ popUpMessage: message });
+
+        await wait(3000);
+        this.setState({ popUpActive: false });
+    }
+
+
+    handleDistanceChange = (value) => {
     const newValue = parseFloat(value.x);
 
     // this.setState({ sliderValue4: newValue });
@@ -580,14 +580,9 @@ export default class SpaceSimulation extends Component {
     window.location.reload();
   }
 
-  startSimulation = () => {
-    // this.objects = this.database[this.state.selectedSetup];
-    this.setState({ simulationStarted: true });
-  }
-
-  pauseSimulation = () => {
-    this.setState({ simulationStarted: false });
-  }
+    startSimulation = () => {
+        this.setState({ simulationStarted: !this.state.simulationStarted });
+    }
 
   changeFrame = () => {
     this.setState({ centerFrame: !this.state.centerFrame })
@@ -607,99 +602,99 @@ export default class SpaceSimulation extends Component {
   render() {
     return (
       <div className="contain">
-        <div className="userParamsContainer">
-          <div id="button-contain">
-            {this.database.map((item, index) => (
-              <button key={index} className="button" onClick={() => this.changeSetup(index)}>Setup #{index + 1}</button>
-            ))}
-          </div>
-          {/* {this.database ? this.Button() : <div>wait</div>} */}
+        {this.state.popUpActive && <div className="popUp"><h1>{this.state.popUpMessage}</h1></div>}
+        <div>
+          <div className="userParamsContainer">
+            <div id="button-contain">
+              {this.database.map((item, index) => (
+                <button key={index} className="button" onClick={() => this.changeSetup(index)}>Setup #{index + 1}</button>
+              ))}
+            </div>
+            {/* {this.database ? this.Button() : <div>wait</div>} */}
 
-          <p>Start the simulation : <button onClick={this.startSimulation}>START</button></p>
-          <p>Pause the simulation : <button onClick={this.pauseSimulation}>PAUSE</button></p>
-          <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
-          <p>Zoom the scope of the simulation: {((Math.round(this.state.zoomFactor * 100) / 100).toFixed(2))}x</p>
-          <InputSlider
-            axis="x"
-            x={this.state.zoomFactor}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleZoom}
-            id={this.state.zoomFactor}
-          />
-          <p>Multiplier for mass M1 : {(Math.round(this.state.massM1Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
-          </p>
-          <InputSlider
-            axis="x"
-            x={this.state.massM1Multiplier}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleMass1Change}
-            id={this.state.massM1Multiplier}
-          />
-          <p>Multiplier for mass M2 : {(Math.round(this.state.massM2Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
-          </p>
-          <InputSlider
-            axis="x"
-            x={this.state.massM2Multiplier}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleMass2Change}
-            id={this.state.massM2Multiplier}
-          />
-          {/* MAKE THIS PART DISSAPEAR IF STARTED */}
-          {!this.state.simulationStarted &&
-            <p>Multiplier for velocity M2 : {(Math.round(this.state.velocityM2Multiplier * 100) / 100).toFixed(2)}x the velocity&nbsp;
-            </p>}
-          {!this.state.simulationStarted && <InputSlider
-            axis="x"
-            x={this.state.velocityM2Multiplier}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleM2VelocityChange}
-            id={this.state.velocityM2Multiplier}
-          />}
-          {!this.state.simulationStarted &&
-            <p>Initial distance between M1 & M2 : {(Math.round(this.state.distanceMultiplier * 100) / 100).toFixed(2)}x the distance&nbsp;
-            </p>}
-          {!this.state.simulationStarted &&
+              <p>{this.state.simulationStarted ? "pause" : "start" } the simulation : <button onClick={this.startSimulation}>{this.state.simulationStarted ? "PAUSE" : "START" }</button></p>
+              <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
+            <p>Zoom the scope of the simulation: {((Math.round(this.state.zoomFactor * 100) / 100).toFixed(2))}x</p>
             <InputSlider
               axis="x"
-              x={this.state.distanceMultiplier}
+              x={this.state.zoomFactor}
               xmin={0}
               xmax={10}
               xstep={0.1}
-              onChange={this.handleDistanceChange}
-              id={this.state.distanceMultiplier}
+              onChange={this.handleZoom}
+              id={this.state.zoomFactor}
+            />
+            <p>Multiplier for mass M1 : {(Math.round(this.state.massM1Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
+            </p>
+            <InputSlider
+              axis="x"
+              x={this.state.massM1Multiplier}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleMass1Change}
+              id={this.state.massM1Multiplier}
+            />
+            <p>Multiplier for mass M2 : {(Math.round(this.state.massM2Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
+            </p>
+            <InputSlider
+              axis="x"
+              x={this.state.massM2Multiplier}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleMass2Change}
+              id={this.state.massM2Multiplier}
+            />
+            {/* MAKE THIS PART DISSAPEAR IF STARTED */}
+            {!this.state.simulationStarted &&
+              <p>Multiplier for velocity M2 : {(Math.round(this.state.velocityM2Multiplier * 100) / 100).toFixed(2)}x the velocity&nbsp;
+              </p>}
+            {!this.state.simulationStarted && <InputSlider
+              axis="x"
+              x={this.state.velocityM2Multiplier}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleM2VelocityChange}
+              id={this.state.velocityM2Multiplier}
             />}
+            {!this.state.simulationStarted &&
+              <p>Initial distance between M1 & M2 : {(Math.round(this.state.distanceMultiplier * 100) / 100).toFixed(2)}x the distance&nbsp;
+              </p>}
+            {!this.state.simulationStarted &&
+              <InputSlider
+                axis="x"
+                x={this.state.distanceMultiplier}
+                xmin={0}
+                xmax={10}
+                xstep={0.1}
+                onChange={this.handleDistanceChange}
+                id={this.state.distanceMultiplier}
+              />}
 
-          <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
+            <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
 
-          <span>Centered Frame: </span><input
-            type="checkbox"
-            checked={this.state.centerFrame}
-            onChange={this.changeFrame}
-          /><br></br><br></br>
-          <span>Circular Space: </span><input
-            type="checkbox"
-            checked={this.state.infiniSpace}
-            onChange={this.changeSpace}
-          /><br></br><br></br>
-{/* 
-          <span>Find Best Path: </span><input
-            type="checkbox"
-            checked={this.state.moreRockets}
-            onChange={this.getRocket}
-          /> */}
-
+            <span>Centered Frame: </span><input
+              type="checkbox"
+              checked={this.state.centerFrame}
+              onChange={this.changeFrame}
+            /><br></br><br></br>
+            <span>Circular Space: </span><input
+              type="checkbox"
+              checked={this.state.infiniSpace}
+              onChange={this.changeSpace}
+            /><br></br><br></br>
+            {/*
+                      <span>Find Best Path: </span><input
+                        type="checkbox"
+                        checked={this.state.moreRockets}
+                        onChange={this.getRocket}
+                      /> */}
+          </div>
+          <Sketch id="drawing" setup={this.setup} draw={this.draw} />
+          <br></br>
         </div>
-
-        <Sketch id="drawing" setup={this.setup} draw={this.draw} />
-        <br></br>
       </div>
     );
   }
