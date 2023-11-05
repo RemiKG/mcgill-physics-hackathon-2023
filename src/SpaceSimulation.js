@@ -4,8 +4,7 @@ import rocketImg from './rocket.png';
 import earthImg from './earth-transparent-png-9.png';
 import moonImg from './full-moon-transparent-background-7.png'
 import InputSlider from "react-input-slider";
-
-;
+import './SpaceSimulation.css'
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -19,9 +18,10 @@ export default class SpaceSimulation extends Component {
       distanceMultiplier: 1, // Multiplier to change distance between M1 and M2
       simulationStarted: false,
       propulsion: false,
-      centerFrame: true,
+      centerFrame: false,
       infiniSpace: false,
-      moreRockets: false
+      moreRockets: false,
+      images: []
     };
   }
   stars = [];
@@ -99,7 +99,7 @@ export default class SpaceSimulation extends Component {
         // "velocity": [-2040, 0],
         "velocity": [0, 1370],
         "acceleration": [0, 0],
-        "diameter": 5 * 10 ** 6,
+        "diameter": 5 * 10 ** 7,
         "color": [255, 255, 0],
 
       }
@@ -136,7 +136,7 @@ export default class SpaceSimulation extends Component {
         "velocity": [2040, 0],
         "acceleration": [0, 0],
         "color": [255, 255, 0],
-        "diameter": 5 * 10 ** 6
+        "diameter": 2.5 * 10 ** 7
       }
     ],
     [
@@ -170,7 +170,7 @@ export default class SpaceSimulation extends Component {
         "velocity": [2040, 0],
         "acceleration": [0, 0],
         "color": [255, 255, 0],
-        "diameter": 7 * 10 ** 7,
+        "diameter": 3.5 * 10 ** 6,
       }
     ]
   ]
@@ -180,11 +180,13 @@ export default class SpaceSimulation extends Component {
       p5.createCanvas(window.innerWidth, window.innerHeight)
       this.initializeStars(p5);
       // Set a flag to indicate that the canvas has been created
-      this.rocket = p5.loadImage(rocketImg)
-      this.earth = p5.loadImage(earthImg)
-      this.moon = p5.loadImage(moonImg)
+      // this.rocketImage = p5.loadImage(rocketImg)
+      // this.earthImage = p5.loadImage(earthImg)
+      // this.moonImage = p5.loadImage(moonImg)
+      this.setState({images: [p5.loadImage(rocketImg),
+        p5.loadImage(earthImg), p5.loadImage(moonImg) 
+        ]}) 
     }
-
     this.height = window.innerHeight;
     this.width = window.innerWidth;
     // All the objects will be stored here!:w
@@ -241,12 +243,40 @@ export default class SpaceSimulation extends Component {
         this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
         this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-        if (this.state.centerFrame) {
-          p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
-        } else {
-          p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+        this.velocity = this.objects[i]["velocity"];
+        this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
+        p5.push();
+        p5.translate((this.objects[i]["position"][0]/this.m_per_pixel), (this.objects[i]["position"][1] /this.m_per_pixel))
+        p5.rotate(this.angle+p5.PI/4);
+        this.makeImage = true
+        if(this.objects[i]["name"] === "rocket"){
+          this.selectedImage = this.state.images[0];
         }
+        else if(this.objects[i]["name"] === "M1"){
+          this.selectedImage = this.state.images[1];
+        }
+        else if(this.objects[i]["name"] === "M2"){
+          this.selectedImage = this.state.images[2];         
+        } else{
+          this.makeImage = false
+          // if (this.state.centerFrame) {
+          //   p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+          // } else {
+          //   p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+          // }
+        }
+        // console.log(this.state.imges)
+        // this.selectedImage = this.state.images[2]
+        if(this.makeImage){ 
+          this.scaleFactor = this.objects[i]["diameter"] / this.m_per_pixel / this.selectedImage.width
+          p5.scale(this.scaleFactor)
+          p5.imageMode(p5.CENTER);
+          this.rotatedcomX = (this.comX) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
+          this.rotatedcomY = - (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
+          p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
+          p5.pop();
 
+        }
       }
 
       p5.fill(255, 255, 255)
@@ -382,18 +412,42 @@ export default class SpaceSimulation extends Component {
 
 
       // Rocket image
-      // let velocity = this.objects[i]["velocity"];
-      // let angle = Math.atan2(velocity[1], velocity[0]);
-      // p5.push();
-      // p5.translate((this.objects[i]["position"][0]/this.m_per_pixel), (this.objects[i]["position"][1] /this.m_per_pixel))
-      // p5.rotate(angle+p5.PI/4);
-      // let scaleFactor = this.objects[i]["diameter"]/ this.m_per_pixel / this.objects[i]["image"].width
-      // p5.scale(scaleFactor)
-      // p5.imageMode(p5.CENTER);
-      // let rotatedcomX = (this.comX) / this.m_per_pixel*Math.cos(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4)
-      // let rotatedcomY = - (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.cos(angle+p5.PI/4)
-      // p5.image(this.objects[i]["image"], - rotatedcomX, - rotatedcomY);
-      // p5.pop(); 
+        this.velocity = this.objects[i]["velocity"];
+        this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
+        p5.push();
+        p5.translate((this.objects[i]["position"][0]/this.m_per_pixel), (this.objects[i]["position"][1] /this.m_per_pixel))
+        p5.rotate(this.angle+p5.PI/4);
+        this.makeImage = true
+        if(this.objects[i]["name"] === "rocket"){
+          this.selectedImage = this.state.images[0];
+        }
+        else if(this.objects[i]["name"] === "M1"){
+          this.selectedImage = this.state.images[1];
+        }
+        else if(this.objects[i]["name"] === "M2"){
+          this.selectedImage = this.state.images[2];         
+        } else{
+          this.makeImage = false
+          if (this.state.centerFrame) {
+            p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+          } else {
+            p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+          }
+        }
+        // console.log(this.state.imges)
+        // this.selectedImage = this.state.images[2]
+        if(this.makeImage){ 
+        this.scaleFactor = this.objects[i]["diameter"]/ this.m_per_pixel / this.selectedImage.width
+        p5.scale(this.scaleFactor)
+        p5.imageMode(p5.CENTER);
+        this.rotatedcomX = (this.comX) / this.m_per_pixel*Math.cos(this.angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.sin(this.angle+p5.PI/4)
+        this.rotatedcomY = - (this.comY) / this.m_per_pixel*Math.sin(this.angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.cos(this.angle+p5.PI/4)
+        p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
+        p5.pop();
+
+        } else{
+
+        }
             
       // Monitor total energy : Energy = Kinetic energy + Potential energy
       //   if(i==0){
