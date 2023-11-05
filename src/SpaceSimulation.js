@@ -4,6 +4,7 @@ import rocketImg from './rocket.png';
 import earthImg from './earth-transparent-png-9.png';
 import moonImg from './full-moon-transparent-background-7.png'
 import InputSlider from "react-input-slider";
+import './SpaceSimulation.css'
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -176,20 +177,21 @@ export default class SpaceSimulation extends Component {
 
       for (let i = 0; i < this.objects.length; i++) {
 
-        this.temp1 = this.objects[i]["position"][0]
-        this.temp2 = this.objects[i]["position"][1]
-
-        if (i == 0) {
-          p5.fill(0, 200, 200)
-        } else if (i == 1) {
-          p5.fill(200, 0, 200)
-        } else {
-          p5.fill(255, 0, 0)
-        }
         this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
         this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-        p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY) / this.m_per_pixel, this.objects[i]["diameter"] / this.m_per_pixel)
+        let velocity = this.objects[i]["velocity"];
+        let angle = Math.atan2(velocity[1], velocity[0]);
+        p5.push();
+        p5.translate((this.objects[i]["position"][0]/this.m_per_pixel), (this.objects[i]["position"][1] /this.m_per_pixel))
+        p5.rotate(angle+p5.PI/4);
+        let scaleFactor = this.objects[i]["diameter"]/ this.m_per_pixel / this.objects[i]["image"].width
+        p5.scale(scaleFactor)
+        p5.imageMode(p5.CENTER);
+        let rotatedcomX = (this.comX) / this.m_per_pixel*Math.cos(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4)
+        let rotatedcomY = - (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.cos(angle+p5.PI/4)
+        p5.image(this.objects[i]["image"], - rotatedcomX, - rotatedcomY);
+        p5.pop();
       }
 
       p5.fill(255, 255, 255)
@@ -271,7 +273,7 @@ export default class SpaceSimulation extends Component {
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-      p5.circle((this.objects[i]["position"][0]) / this.m_per_pixel, (this.objects[i]["position"][1] )/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+      //p5.circle((this.objects[i]["position"][0]) / this.m_per_pixel, (this.objects[i]["position"][1] )/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       
      
       // Rocket image
@@ -286,7 +288,7 @@ export default class SpaceSimulation extends Component {
       let rotatedcomX = (this.comX) / this.m_per_pixel*Math.cos(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4)
       let rotatedcomY = - (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.cos(angle+p5.PI/4)
       p5.image(this.objects[i]["image"], - rotatedcomX, - rotatedcomY);
-      p5.pop(); 
+      p5.pop();
             
       // Monitor total energy : Energy = Kinetic energy + Potential energy
       //   if(i==0){

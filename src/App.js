@@ -11,7 +11,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Space Simulation for Hohmann Transfer Orbit</h1>
+      <h1>Orbit simulation</h1>
       <SpaceSimulation />
     </div>
   )

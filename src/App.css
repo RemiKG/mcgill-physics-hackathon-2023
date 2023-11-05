@@ -11,6 +11,21 @@ body{
   overflow: hidden;
 }
 
+
+div > h1 {
+    color: white;
+    font-size: 50px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 9%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
