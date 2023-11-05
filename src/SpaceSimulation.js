@@ -39,6 +39,7 @@ export default class SpaceSimulation extends Component {
         "name": "M1",
         "mass": 6 * 10 ** 24, // In kg
         "position": [0, 0],
+        
         "velocity": [0, 0],
         "acceleration": [0, 0],
         "diameter": 7 * 10 ** 7,
@@ -49,30 +50,32 @@ export default class SpaceSimulation extends Component {
         // "mass": 7.35 * 10 ** 22, // In kg
         "mass": 11.35 * 10 ** 22, // In kg
         "position": [4.055 * 10**8, 0],
+        
         "velocity": [0, 970],
         "acceleration": [0, 0],
         "diameter": 1.7 * 10 ** 7,
         "image": p5.loadImage(moonImg)
       },
-      // {
-      //   "name": "rocket",
-      //   "mass": 10*4, // In kg
-      //   "position": [0, -7 * 10**7],
-      //   // "velocity": [-2040, 0],
-      //   "velocity": [2040, 0],
-      //   "acceleration": [0, 0],
-      //   "diameter": 5 * 10 ** 6
-      // }
       {
         "name": "rocket",
         "mass": 10*4, // In kg
-        "position": [4.355 * 10**8, 0],
+        "position": [0, -7 * 10**7],
         // "velocity": [-2040, 0],
-        "velocity": [0, 1270],
+        "velocity": [2040, 0],
         "acceleration": [0, 0],
-        "diameter": 5 * 10 ** 6,
-        "image": p5.loadImage(rocketImg)
+        "diameter": 5 * 10 ** 6
       }
+      // {
+      //   "name": "rocket",
+      //   "mass": 10*4, // In kg
+      //   "position": [4.355 * 10**8, 0],
+      
+      //   // "velocity": [-2040, 0],
+      //   "velocity": [0, 1370],
+      //   "acceleration": [0, 0],
+      //   "diameter": 5 * 10 ** 6,
+      //   "image": p5.loadImage(rocketImg)
+      // }
       // {
       //   "name": "M2",
       //   "mass": 7.35 * 10 ** 22, // In kg
@@ -97,7 +100,7 @@ export default class SpaceSimulation extends Component {
     this.s_per_frame = 10 ** (3);
     // this.s_per_frame = 10 ** (2);
 
-    this.m_per_pixel = 10 ** 6;
+    this.m_per_pixel = 1.6 * 10 ** 6;
 
     // Rocket Section!
     document.body.onkeyup = (e) => {
@@ -138,9 +141,6 @@ export default class SpaceSimulation extends Component {
 
       for(let i = 0; i < this.objects.length; i++){
 
-        this.temp1 = this.objects[i]["position"][0]
-        this.temp2 = this.objects[i]["position"][1]
-
         if(i == 0){
           p5.fill(0, 200, 200)
         } else if(i == 1){
@@ -151,7 +151,7 @@ export default class SpaceSimulation extends Component {
         this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
         this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-        p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+        p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel ) , (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel , this.objects[i]["diameter"]/ this.m_per_pixel)
       }
       p5.fill(255, 255, 255)
       return;
@@ -165,8 +165,8 @@ export default class SpaceSimulation extends Component {
     p5.frameRate(this.fr);
   
     // p5.background(25, 25, 250,0.99);
-    // p5.fill(25, 25, 25, 35)
-    // p5.rect(-this.width/2, -this.height/2, this.width, this.height)
+    p5.fill(25, 25, 25, 50)
+    p5.rect(-this.width / 2, -this.height / 2, this.width, this.height)
 
     // console.log(this.objects.length)
 
@@ -208,23 +208,36 @@ export default class SpaceSimulation extends Component {
       this.objects[i]["velocity"][0] += this.objects[i]["acceleration"][0] * this.s_per_frame     
       this.objects[i]["velocity"][1] += this.objects[i]["acceleration"][1] * this.s_per_frame     
 
-
       this.objects[i]["position"][0] += this.objects[i]["velocity"][0] * this.s_per_frame      
       this.objects[i]["position"][1] += this.objects[i]["velocity"][1] * this.s_per_frame 
       
+      // this.objects[i]["position"][0] %= (this.width * this.m_per_pixel)     
+      // this.objects[i]["position"][1] = (this.objects[i]["position"][1])%this.height       
+      this.tempWidth = this.width * this.m_per_pixel
+      this.tempHeight = this.height * this.m_per_pixel
       
+      this.objects[i]["position"][0] = (this.objects[i]["position"][0] + this.tempWidth/2)%(this.tempWidth) - this.tempWidth/2
+      this.objects[i]["position"][1] = (this.objects[i]["position"][1] + this.tempHeight/2)%(this.tempHeight) - this.tempHeight/2
+      if(i == 2){
+        console.log(this.objects[i]["position"][0])
+        console.log(this.objects[i]["position"][1])
+      }
       if(i == 0){
-        p5.fill(0, 200, 200)
+        p5.fill(0, 200, 200, 200)
       } else if(i == 1){
-        p5.fill(200, 0, 200)
+        p5.fill(200, 0, 200, 200)
       } else {
         // p5.fill(255, 0, 0)
-        p5.fill(255, 255, 0)
+        p5.fill(255, 255, 0, 200)
       }
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+
+      // p5.circle((this.objects[i]["prev-position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["prev-position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+      // p5.fill(255, 255, 255)
+      p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel ), ((this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel) , this.objects[i]["diameter"]/ this.m_per_pixel)
+      // p5.circle((this.objects[i]["prev-position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["prev-position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       
      
       // Rocket image
