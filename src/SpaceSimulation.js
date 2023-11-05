@@ -10,13 +10,15 @@ import {wait} from "@testing-library/user-event/dist/utils";
 export default class SpaceSimulation extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      massM1: 6 * 10 ** 24, // Initial mass of M1 in kg
+    this.state = { // Initial mass of M1 in kg
       massM1Multiplier: 1, // Multiplier to change mass of M1
-      sliderValue: 1,
-      massM2: 7.35 * 10 ** 22, // Initial mass of M2 in kg
+      sliderValue: 1,// Initial mass of M2 in kg
       massM2Multiplier: 1, // Multiplier to change mass of M2
-      sliderValue2: 1,
+      sliderValue2: 1,// Initial velocity of M2 in m/s
+      velocityM2Multiplier: 1, // Multiplier to change velocity of M2
+      sliderValue3: 1,
+      distanceMultiplier: 1, // Multiplier to change distance between M1 and M2
+      sliderValue4: 1, // Initial distance between M1 and M2 in m
       simulationStarted: false,
       propulsion: false
     };
@@ -100,7 +102,10 @@ export default class SpaceSimulation extends Component {
         console.log(this.state.propulsion)
       }
     }
-    this.rocketAcceleration = 1;
+    this.rocket_u = 10;
+    this.rocket_mu = 10;
+
+
 
     p5.background(25, 25, 25);
   };
@@ -189,7 +194,7 @@ export default class SpaceSimulation extends Component {
 
           this.objects[i]["velocity"][0] += this.rocketAcceleration * this.d_vx
           this.objects[i]["velocity"][1] += this.rocketAcceleration * this.d_vy
-          
+
         }
       }
       // Change velocity according to acceleration
@@ -220,8 +225,8 @@ export default class SpaceSimulation extends Component {
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
       p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
-      
-     
+
+
       // Rocket image
       // let velocity = this.objects[i]["velocity"];
       // let angle = Math.atan2(velocity[1], velocity[0]);
@@ -230,8 +235,12 @@ export default class SpaceSimulation extends Component {
       // p5.rotate(angle-12.5);
       // p5.imageMode(p5.CENTER);
       // p5.image(this.objects[i]["image"], -this.objects[i]["image"].width/2, -this.objects[i]["image"].height/2);
-      // p5.pop();  
-            
+      // p5.pop();
+
+      //p5.image(this.objects[i]["image"], this.objects[i]["position"][0]/ this.m_per_pixel -this.earth.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.earth.height/2);
+
+
+      //p5.image(this.rocket, this.objects[i]["position"][0]/ this.m_per_pixel -this.rocket.width/2, this.objects[i]["position"][1]/ this.m_per_pixel-this.rocket.height/2); // draw the image
       // Monitor total energy : Energy = Kinetic energy + Potential energy
       //   if(i==0){
       //     this.energy = 1/2 * this.objects[0]['mass'] * Math.sqrt(this.objects[0]['velocity'][0]**2+this.objects[0]['velocity'][1]**2)  + this.objects[0]['mass'] * this.total_a * this.r
@@ -241,7 +250,7 @@ export default class SpaceSimulation extends Component {
       //       this.objects[0]['velocity'],
       //       this.objects[0]['mass'],
       //       this.r)
-      
+
       this.kinetic += this.objects[i]["mass"] * (this.objects[i]["velocity"][0] **2 + this.objects[i]["velocity"][1]**2)/2
 
       // console.log(this.kinetic)
@@ -281,7 +290,39 @@ export default class SpaceSimulation extends Component {
       this.objects[1].mass = (7.35 * 10 ** 22) / (newValue);
     }
   };
-    
+
+  handleM2VelocityChange = (value) => {
+    const newValue = parseFloat(value.x);
+
+    this.setState({ sliderValue3 : newValue });
+    this.setState({ velocityM2Multiplier: newValue });
+
+    if (newValue === 1) {
+      console.log(this.objects[1])
+      this.objects[1].velocity[1] = 970;
+      console.log(this.objects[1])
+    } else if (newValue > 0) {
+      this.objects[1].velocity[1] = (970) * newValue;
+    } else if (newValue < 0) {
+      this.objects[1].velocity[1] = (970) / (newValue);
+    }
+  };
+
+    handleDistanceChange = (value) => {
+        const newValue = parseFloat(value.x);
+
+        this.setState({ sliderValue4 : newValue });
+        this.setState({ distanceMultiplier: newValue });
+
+        if (newValue === 1) {
+            this.objects[1].position[0] = 4.055 * 10**8;
+        } else if (newValue > 0) {
+            this.objects[1].position[0] = (4.055 * 10**8) * newValue;
+        } else if (newValue < 0) {
+            this.objects[1].position[0] = (4.055 * 10**8) / (newValue);
+        }
+    }
+
   resetSimulation = () => {
     window.location.reload();
   }
@@ -322,6 +363,28 @@ export default class SpaceSimulation extends Component {
               xstep={0.1}
               onChange={this.handleMass2Change}
               id={this.state.massM2Multiplier}
+          />
+          <p>Multiplier for velocity M2 : {(Math.round(this.state.velocityM2Multiplier* 100) / 100).toFixed(2)}x the velocity&nbsp;
+          </p>
+          <InputSlider
+              axis="x"
+              x={this.state.sliderValue3}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleM2VelocityChange}
+              id={this.state.velocityM2Multiplier}
+          />
+          <p>Initial distance between M1 & M2 : {(Math.round(this.state.distanceMultiplier * 100) / 100).toFixed(2)}x the distance&nbsp;
+          </p>
+          <InputSlider
+              axis="x"
+              x={this.state.sliderValue4}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleDistanceChange}
+              id={this.state.distanceMultiplier}
           />
         <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
         </div>
