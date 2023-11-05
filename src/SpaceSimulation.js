@@ -197,6 +197,11 @@ export default class SpaceSimulation extends Component {
     // Angle and rate at which the angle of the second planet increases
 
 
+    // For calculating Aphelion and Perihelion later
+    this.aphelion = 0
+    this.perihelion = 9999999999999999999
+
+
     this.s_per_frame = 10 ** (3);
     // this.s_per_frame = 10 ** (2);
 
@@ -290,6 +295,18 @@ export default class SpaceSimulation extends Component {
           }
           p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
           p5.pop();
+
+        this.current_distance = sqrt((this.objects[0]["position"][0]-this.objects[2]["position"][0])**2+(this.objects[0]["position"][1]-this.objects[2]["position"][1])**2)
+        // Find Aphelion
+        if (this.aphelion < this.current_distance){
+          this.aphelion = this.current_distance
+        }
+
+        // Find Perihelion
+        if (this.perihelion > this.current_distance){
+          this.perihelion = this.current_distance
+        }
+
 
         }
       }
