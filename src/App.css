@@ -7,19 +7,23 @@
 }
 body{
   height: 100vh;
-  width : 100%;
+  width : 0;
   overflow: hidden;
+  background-color: transparent; 
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+h1{
+  background-color: transparent;
+  position:absolute;
+  color: white;
+  left: 50%;
+  transform: translateX(-50%);
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#root{
+  margin: 0 !important;
+  padding: 0 !important;
+  background-color: transparent;
+  /* z-index: -5; */
+  height: 0;
 }
 
 .App-header {
@@ -47,15 +51,48 @@ body{
 }
 
 .contain{
-  background: transparent;
+  
   color: white;
-  position: relative;
+  position: absolute;
+  padding: 200pxvh;
+  height: 100%;
+  background-color:transparent;
 }
 .userParamsContainer {
-  position: absolute;
+  position: relative;
   top: 0px;
   /* left: -900px; */
   left: 0px;
+  min-width: 350px;
+  /* height: calc(100vh - 100px); */
+  height: calc(100% - 125px);
+  border: 1px transparent solid;
+  transition-duration: 0.5s;
+  text-align: center;
   padding: 50px; /* Add padding to create some space from the top and left edges */
+  padding-top: 10px;
   /* padding-left: 100px; */
+}
+.userParamsContainer:hover{
+  border: 1px rgba(255, 255, 255, 0.5) solid !important;
+}
+#button-contain{
+  min-width: 300px;
+  margin-top: 70px;
+  position: relative;
+  color: white; 
+}
+.button{
+  background-color: rgb(50, 224, 255);
+  cursor: pointer !important;
+  color:white;
+  padding: 20px 40px 20px 40px;
+  border: none;
+  margin: 10px;
+  border-radius: 10px;
+  font-size: 20px;
+  transition-duration: 0.5s; 
+}
+.button:hover{
+  background-color: rgb(57, 186, 209);
 }
