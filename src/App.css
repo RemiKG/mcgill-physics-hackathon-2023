@@ -70,11 +70,12 @@ div > h1 {
 }
 
 .contain{
-  
   color: white;
   position: absolute;
-  padding: 200pxvh;
+  padding: 200px;
   height: 100%;
+  top :0%;
+  transform: translateY(-15%) translateX(-20%);
   background-color:transparent;
 }
 .userParamsContainer {
@@ -114,4 +115,11 @@ div > h1 {
 }
 .button:hover{
   background-color: rgb(57, 186, 209);
+}
+
+.madeBy {
+  position: absolute;
+  background: white;
+  width: 100%;
+  height: 20px;
 }

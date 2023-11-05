@@ -7,13 +7,11 @@ import SpaceSimulation from './SpaceSimulation';
 
 
 const App = () => {
-
-
   return (
     <div className="App">
-        <p>&copy;Made by Tomoji, Kenneth, Ben, Yue Ma and Chris</p>
-      <h1>Orbit Simulation</h1>
-      <SpaceSimulation />
+        <p className="madeBy">&copy;Made by Tomoji, Kenneth, Ben, Yue Ma and Chris</p>
+        <h1>Orbit Simulation</h1>
+        <SpaceSimulation />
     </div>
   )
 }

@@ -22,7 +22,7 @@ export default class SpaceSimulation extends Component {
       centerFrame: false,
       infiniSpace: false,
       moreRockets: false,
-      images: []
+      images: [],
       popUpActive: false,
       popUpMessage: ""
     };
@@ -597,103 +597,101 @@ export default class SpaceSimulation extends Component {
 
   render() {
     return (
-        <div>
-        {this.state.popUpActive && <div className="popUp"><h1>{this.state.popUpMessage}</h1></div>}
       <div className="contain">
-        <div className="userParamsContainer">
-          <div id="button-contain">
-            {this.database.map((item, index) => (
-              <button key={index} className="button" onClick={() => this.changeSetup(index)}>Setup #{index + 1}</button>
-            ))}
-          </div>
-          {/* {this.database ? this.Button() : <div>wait</div>} */}
+        {this.state.popUpActive && <div className="popUp"><h1>{this.state.popUpMessage}</h1></div>}
+        <div>
+          <div className="userParamsContainer">
+            <div id="button-contain">
+              {this.database.map((item, index) => (
+                <button key={index} className="button" onClick={() => this.changeSetup(index)}>Setup #{index + 1}</button>
+              ))}
+            </div>
+            {/* {this.database ? this.Button() : <div>wait</div>} */}
 
-            <p>{this.state.simulationStarted ? "pause" : "start" } the simulation : <button onClick={this.startSimulation}>{this.state.simulationStarted ? "PAUSE" : "START" }</button></p>
-            <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
-          <p>Zoom the scope of the simulation: {((Math.round(this.state.zoomFactor * 100) / 100).toFixed(2))}x</p>
-          <InputSlider
-            axis="x"
-            x={this.state.zoomFactor}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleZoom}
-            id={this.state.zoomFactor}
-          />
-          <p>Multiplier for mass M1 : {(Math.round(this.state.massM1Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
-          </p>
-          <InputSlider
-            axis="x"
-            x={this.state.massM1Multiplier}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleMass1Change}
-            id={this.state.massM1Multiplier}
-          />
-          <p>Multiplier for mass M2 : {(Math.round(this.state.massM2Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
-          </p>
-          <InputSlider
-            axis="x"
-            x={this.state.massM2Multiplier}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleMass2Change}
-            id={this.state.massM2Multiplier}
-          />
-          {/* MAKE THIS PART DISSAPEAR IF STARTED */}
-          {!this.state.simulationStarted &&
-            <p>Multiplier for velocity M2 : {(Math.round(this.state.velocityM2Multiplier * 100) / 100).toFixed(2)}x the velocity&nbsp;
-            </p>}
-          {!this.state.simulationStarted && <InputSlider
-            axis="x"
-            x={this.state.velocityM2Multiplier}
-            xmin={0}
-            xmax={10}
-            xstep={0.1}
-            onChange={this.handleM2VelocityChange}
-            id={this.state.velocityM2Multiplier}
-          />}
-          {!this.state.simulationStarted &&
-            <p>Initial distance between M1 & M2 : {(Math.round(this.state.distanceMultiplier * 100) / 100).toFixed(2)}x the distance&nbsp;
-            </p>}
-          {!this.state.simulationStarted &&
+              <p>{this.state.simulationStarted ? "pause" : "start" } the simulation : <button onClick={this.startSimulation}>{this.state.simulationStarted ? "PAUSE" : "START" }</button></p>
+              <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
+            <p>Zoom the scope of the simulation: {((Math.round(this.state.zoomFactor * 100) / 100).toFixed(2))}x</p>
             <InputSlider
               axis="x"
-              x={this.state.distanceMultiplier}
+              x={this.state.zoomFactor}
               xmin={0}
               xmax={10}
               xstep={0.1}
-              onChange={this.handleDistanceChange}
-              id={this.state.distanceMultiplier}
+              onChange={this.handleZoom}
+              id={this.state.zoomFactor}
+            />
+            <p>Multiplier for mass M1 : {(Math.round(this.state.massM1Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
+            </p>
+            <InputSlider
+              axis="x"
+              x={this.state.massM1Multiplier}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleMass1Change}
+              id={this.state.massM1Multiplier}
+            />
+            <p>Multiplier for mass M2 : {(Math.round(this.state.massM2Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
+            </p>
+            <InputSlider
+              axis="x"
+              x={this.state.massM2Multiplier}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleMass2Change}
+              id={this.state.massM2Multiplier}
+            />
+            {/* MAKE THIS PART DISSAPEAR IF STARTED */}
+            {!this.state.simulationStarted &&
+              <p>Multiplier for velocity M2 : {(Math.round(this.state.velocityM2Multiplier * 100) / 100).toFixed(2)}x the velocity&nbsp;
+              </p>}
+            {!this.state.simulationStarted && <InputSlider
+              axis="x"
+              x={this.state.velocityM2Multiplier}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleM2VelocityChange}
+              id={this.state.velocityM2Multiplier}
             />}
+            {!this.state.simulationStarted &&
+              <p>Initial distance between M1 & M2 : {(Math.round(this.state.distanceMultiplier * 100) / 100).toFixed(2)}x the distance&nbsp;
+              </p>}
+            {!this.state.simulationStarted &&
+              <InputSlider
+                axis="x"
+                x={this.state.distanceMultiplier}
+                xmin={0}
+                xmax={10}
+                xstep={0.1}
+                onChange={this.handleDistanceChange}
+                id={this.state.distanceMultiplier}
+              />}
 
-          <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
+            <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
 
-          <span>Centered Frame: </span><input
-            type="checkbox"
-            checked={this.state.centerFrame}
-            onChange={this.changeFrame}
-          /><br></br><br></br>
-          <span>Circular Space: </span><input
-            type="checkbox"
-            checked={this.state.infiniSpace}
-            onChange={this.changeSpace}
-          /><br></br><br></br>
-{/*
-          <span>Find Best Path: </span><input
-            type="checkbox"
-            checked={this.state.moreRockets}
-            onChange={this.getRocket}
-          /> */}
-
+            <span>Centered Frame: </span><input
+              type="checkbox"
+              checked={this.state.centerFrame}
+              onChange={this.changeFrame}
+            /><br></br><br></br>
+            <span>Circular Space: </span><input
+              type="checkbox"
+              checked={this.state.infiniSpace}
+              onChange={this.changeSpace}
+            /><br></br><br></br>
+            {/*
+                      <span>Find Best Path: </span><input
+                        type="checkbox"
+                        checked={this.state.moreRockets}
+                        onChange={this.getRocket}
+                      /> */}
+          </div>
+          <Sketch id="drawing" setup={this.setup} draw={this.draw} />
+          <br></br>
         </div>
-
-        <Sketch id="drawing" setup={this.setup} draw={this.draw} />
-        <br></br>
       </div>
-        </div>
     );
   }
 }
