@@ -3,9 +3,7 @@ import Sketch from "react-p5";
 import rocketImg from './rocket.png';
 import earthImg from './earth-transparent-png-9.png';
 import moonImg from './full-moon-transparent-background-7.png'
-import RangeSlider from 'react-range-slider-input';
 import InputSlider from "react-input-slider";
-import {wait} from "@testing-library/user-event/dist/utils";
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -20,19 +18,59 @@ export default class SpaceSimulation extends Component {
       distanceMultiplier: 1, // Multiplier to change distance between M1 and M2
       sliderValue4: 1, // Initial distance between M1 and M2 in m
       simulationStarted: false,
-      propulsion: false
+      propulsion: false,
     };
   }
+  stars = [];
+
+
+  initializeStars = (p5) => {
+    for (let i = 0; i < 50; i++) {
+      let x, y;
+      x = p5.random(-this.width/2, this.width/2);
+      y = p5.random(-this.height/2, this.height/2);
+
+      const speed = p5.random(1, 3); // Adjust the speed
+      this.stars.push({ x, y, speed });
+    }
+  };
+
+  starDirection;
+
+
+  moveStars = (p5) => {
+    for (let i = 0; i < this.stars.length; i++) {
+      this.starDirection = Math.sqrt(this.stars[i].x**2 + this.stars[i].y**2)
+      this.stars[i].x += this.stars[i].x/this.starDirection * this.stars[i].speed;
+      this.stars[i].y += this.stars[i].y/this.starDirection * this.stars[i].speed;
+
+      if (this.stars[i].x < 0 || this.stars[i].x > this.width || this.stars[i].y < 0 || this.stars[i].y > this.height) {
+        // Reset the star to the center with a new random angle
+        this.stars[i].x = p5.random(-this.width/2, this.width/2);
+        this.stars[i].y = p5.random(-this.height/2, this.height/2);
+        this.stars[i].angle = p5.random(p5.TWO_PI);
+      }
+    }
+  };
+
+  drawStars = (p5) => {
+    p5.fill(255)
+    p5.noStroke();
+    for (let i = 0; i < this.stars.length; i++) {
+      p5.ellipse(this.stars[i].x, this.stars[i].y, 1, 1);
+    }
+  };
 
   setup = (p5) => {
     if (!this.canvasCreated) {
         p5.createCanvas(window.innerWidth, window.innerHeight)
+        this.initializeStars(p5);
          // Set a flag to indicate that the canvas has been created
         this.rocket = p5.loadImage(rocketImg)
         this.earth = p5.loadImage(earthImg)
         this.moon = p5.loadImage(moonImg)
         }
-    
+
     this.height = window.innerHeight;
     this.width = window.innerWidth;
     // Orbital Section
@@ -117,13 +155,20 @@ export default class SpaceSimulation extends Component {
 
 
     p5.background(25, 25, 25);
+
+
+    // Draw stars in the background
+    this.drawStars(p5);
   };
+
+
   draw = p5 => {
+    this.moveStars(p5);
     if (Math.random() > 0.9) {
       p5.stroke(255);
       p5.point(Math.random(this.width), Math.random(this.height));
     }
-
+    this.drawStars(p5);
     // draw stars
     if (Math.random() > 0.95 && this.step >= 2.5) {
       this.fromX = Math.random(this.width);
@@ -155,6 +200,7 @@ export default class SpaceSimulation extends Component {
 
         p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       }
+
       p5.fill(255, 255, 255)
       return;
     }
@@ -166,9 +212,9 @@ export default class SpaceSimulation extends Component {
     p5.noStroke();
     p5.frameRate(this.fr);
   
-    // p5.background(25, 25, 250,0.99);
-    // p5.fill(25, 25, 25, 35)
-    // p5.rect(-this.width/2, -this.height/2, this.width, this.height)
+    p5.background(25, 25, 250,0.99);
+    p5.fill(25, 25, 25, 35)
+    p5.rect(-this.width/2, -this.height/2, this.width, this.height)
 
     // console.log(this.objects.length)
 
@@ -254,9 +300,9 @@ export default class SpaceSimulation extends Component {
       //       this.r)
 
       this.kinetic += this.objects[i]["mass"] * (this.objects[i]["velocity"][0] **2 + this.objects[i]["velocity"][1]**2)/2
-
       // console.log(this.kinetic)
     }
+
     this.potential = -this.objects[0]["mass"] * this.objects[1]["mass"] * 6.6743 * Math.pow(10, -11) / Math.sqrt((this.objects[0]["position"][0] - this.objects[1]["position"][0])**2 + (this.objects[0]["position"][1] - this.objects[1]["position"][1])**2)
     //console.log(this.kinetic + this.potential)
     p5.fill(255, 255, 255)
@@ -339,7 +385,7 @@ export default class SpaceSimulation extends Component {
 
   render() {
     return (
-      <div class="contain">
+      <div className="contain">
         <div className="userParamsContainer">
           <p>Start the simulation : <button onClick={this.startSimulation}>START</button></p>
           <p>Pause the simulation : <button onClick={this.pauseSimulation}>PAUSE</button></p>
