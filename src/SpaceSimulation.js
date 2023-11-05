@@ -5,6 +5,7 @@ import earthImg from './earth-transparent-png-9.png';
 import moonImg from './full-moon-transparent-background-7.png'
 import InputSlider from "react-input-slider";
 import './SpaceSimulation.css'
+import {wait} from "@testing-library/user-event/dist/utils";
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -22,6 +23,8 @@ export default class SpaceSimulation extends Component {
       infiniSpace: false,
       moreRockets: false,
       images: []
+      popUpActive: false,
+      popUpMessage: ""
     };
   }
   stars = [];
@@ -184,8 +187,8 @@ export default class SpaceSimulation extends Component {
       // this.earthImage = p5.loadImage(earthImg)
       // this.moonImage = p5.loadImage(moonImg)
       this.setState({images: [p5.loadImage(rocketImg),
-        p5.loadImage(earthImg), p5.loadImage(moonImg) 
-        ]}) 
+        p5.loadImage(earthImg), p5.loadImage(moonImg)
+        ]})
     }
     this.height = window.innerHeight;
     this.width = window.innerWidth;
@@ -256,7 +259,7 @@ export default class SpaceSimulation extends Component {
           this.selectedImage = this.state.images[1];
         }
         else if(this.objects[i]["name"] === "M2"){
-          this.selectedImage = this.state.images[2];         
+          this.selectedImage = this.state.images[2];
         } else{
           this.makeImage = false
           // if (this.state.centerFrame) {
@@ -267,7 +270,7 @@ export default class SpaceSimulation extends Component {
         }
         // console.log(this.state.imges)
         // this.selectedImage = this.state.images[2]
-        if(this.makeImage){ 
+        if(this.makeImage){
           this.scaleFactor = this.objects[i]["diameter"] / this.m_per_pixel / this.selectedImage.width
           p5.scale(this.scaleFactor)
           p5.imageMode(p5.CENTER);
@@ -311,7 +314,7 @@ export default class SpaceSimulation extends Component {
           // console.log(this.total_a)
           this.objects[i]["acceleration"][0] += this.total_a * this.d_x / (this.r)
           this.objects[i]["acceleration"][1] += this.total_a * this.d_y / (this.r)
-          
+
         }
       }
       // ROCKET PROPULSION CALCULATION
@@ -354,15 +357,15 @@ export default class SpaceSimulation extends Component {
           }
           else if (this.tempX < -this.tempWidth / 2) {
             this.objects[i]["position"][0] = this.tempWidth / 2 - this.comX
-            // this.objects[i]["positions"][0] = this.tempWidth / 2          
+            // this.objects[i]["positions"][0] = this.tempWidth / 2
           }
           if (this.tempY > this.tempHeight / 2) {
             this.objects[i]["position"][1] = -this.tempHeight / 2 - this.comY
-            // this.objects[i]["position"][1] = -this.tempHeight / 2 
+            // this.objects[i]["position"][1] = -this.tempHeight / 2
           }
           else if (this.tempY < -this.tempHeight / 2) {
             this.objects[i]["position"][1] = this.tempHeight / 2 - this.comY
-            // this.objects[i]["position"][1] = this.tempHeight / 2           
+            // this.objects[i]["position"][1] = this.tempHeight / 2
           }
         } else {
           this.tempX = this.objects[i]["position"][0]
@@ -400,13 +403,13 @@ export default class SpaceSimulation extends Component {
       // p5.fill(255, 255, 255)
       // p5.circle((this.objects[i]["position"][0]) / this.m_per_pixel, (this.objects[i]["position"][1] )/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       
-      
+
       if (this.state.centerFrame) {
         p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
       } else {
         p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
       }
-      
+
 
       // p5.circle((this.objects[i]["prev-position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["prev-position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
 
@@ -425,7 +428,7 @@ export default class SpaceSimulation extends Component {
           this.selectedImage = this.state.images[1];
         }
         else if(this.objects[i]["name"] === "M2"){
-          this.selectedImage = this.state.images[2];         
+          this.selectedImage = this.state.images[2];
         } else{
           this.makeImage = false
           if (this.state.centerFrame) {
@@ -436,7 +439,7 @@ export default class SpaceSimulation extends Component {
         }
         // console.log(this.state.imges)
         // this.selectedImage = this.state.images[2]
-        if(this.makeImage){ 
+        if(this.makeImage){
         this.scaleFactor = this.objects[i]["diameter"]/ this.m_per_pixel / this.selectedImage.width
         p5.scale(this.scaleFactor)
         p5.imageMode(p5.CENTER);
@@ -512,7 +515,16 @@ export default class SpaceSimulation extends Component {
     }
   };
 
-  handleDistanceChange = (value) => {
+    popUp = async (message) => {
+        this.setState({ popUpActive: true });
+        this.setState({ popUpMessage: message });
+
+        await wait(3000);
+        this.setState({ popUpActive: false });
+    }
+
+
+    handleDistanceChange = (value) => {
     const newValue = parseFloat(value.x);
 
     // this.setState({ sliderValue4: newValue });
@@ -564,14 +576,9 @@ export default class SpaceSimulation extends Component {
     window.location.reload();
   }
 
-  startSimulation = () => {
-    // this.objects = this.database[this.state.selectedSetup];
-    this.setState({ simulationStarted: true });
-  }
-
-  pauseSimulation = () => {
-    this.setState({ simulationStarted: false });
-  }
+    startSimulation = () => {
+        this.setState({ simulationStarted: !this.state.simulationStarted });
+    }
 
   changeFrame = () => {
     this.setState({ centerFrame: !this.state.centerFrame })
@@ -590,6 +597,8 @@ export default class SpaceSimulation extends Component {
 
   render() {
     return (
+        <div>
+        {this.state.popUpActive && <div className="popUp"><h1>{this.state.popUpMessage}</h1></div>}
       <div className="contain">
         <div className="userParamsContainer">
           <div id="button-contain">
@@ -599,9 +608,8 @@ export default class SpaceSimulation extends Component {
           </div>
           {/* {this.database ? this.Button() : <div>wait</div>} */}
 
-          <p>Start the simulation : <button onClick={this.startSimulation}>START</button></p>
-          <p>Pause the simulation : <button onClick={this.pauseSimulation}>PAUSE</button></p>
-          <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
+            <p>{this.state.simulationStarted ? "pause" : "start" } the simulation : <button onClick={this.startSimulation}>{this.state.simulationStarted ? "PAUSE" : "START" }</button></p>
+            <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
           <p>Zoom the scope of the simulation: {((Math.round(this.state.zoomFactor * 100) / 100).toFixed(2))}x</p>
           <InputSlider
             axis="x"
@@ -673,7 +681,7 @@ export default class SpaceSimulation extends Component {
             checked={this.state.infiniSpace}
             onChange={this.changeSpace}
           /><br></br><br></br>
-{/* 
+{/*
           <span>Find Best Path: </span><input
             type="checkbox"
             checked={this.state.moreRockets}
@@ -685,6 +693,7 @@ export default class SpaceSimulation extends Component {
         <Sketch id="drawing" setup={this.setup} draw={this.draw} />
         <br></br>
       </div>
+        </div>
     );
   }
 }
