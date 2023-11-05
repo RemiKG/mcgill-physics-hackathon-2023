@@ -11,6 +11,7 @@ const App = () => {
 
   return (
     <div className="App">
+        <p>&copy;Made by Tomoji, Kenneth, Ben, Yue Ma and Chris</p>
       <h1>Orbit simulation</h1>
       <SpaceSimulation />
     </div>

@@ -5,6 +5,7 @@ import earthImg from './earth-transparent-png-9.png';
 import moonImg from './full-moon-transparent-background-7.png'
 import InputSlider from "react-input-slider";
 import './SpaceSimulation.css'
+import {wait} from "@testing-library/user-event/dist/utils";
 
 export default class SpaceSimulation extends Component {
   constructor(props) {
@@ -20,6 +21,8 @@ export default class SpaceSimulation extends Component {
       sliderValue4: 1, // Initial distance between M1 and M2 in m
       simulationStarted: false,
       propulsion: false,
+      popUpActive: false,
+      popUpMessage: ""
     };
   }
   stars = [];
@@ -97,7 +100,7 @@ export default class SpaceSimulation extends Component {
       },
       {
         "name": "rocket",
-        "mass": 1, // In kg
+        "mass": 9**3, // In kg
         "position": [0, -8.429 * 10**7],
         // "velocity": [-2040, 0],
         "velocity": [2540, 0],
@@ -228,7 +231,6 @@ export default class SpaceSimulation extends Component {
         }
       }
 
-      ///adssadad
       // ROCKET PROPULSION CALCULATION
       if (this.objects[i]["name"] === "rocket") {
         // console.log(this.state.propulsion)
@@ -358,90 +360,96 @@ export default class SpaceSimulation extends Component {
     }
   };
 
-    handleDistanceChange = (value) => {
-        const newValue = parseFloat(value.x);
+  popUp = async (message) => {
+    this.setState({ popUpActive: true });
+    this.setState({ popUpMessage: message });
 
-        this.setState({ sliderValue4 : newValue });
-        this.setState({ distanceMultiplier: newValue });
+    await wait(3000);
+    this.setState({ popUpActive: false });
+  }
 
-        if (newValue === 1) {
-            this.objects[1].position[0] = 4.055 * 10**8;
-        } else if (newValue > 0) {
-            this.objects[1].position[0] = (4.055 * 10**8) * newValue;
-        } else if (newValue < 0) {
-            this.objects[1].position[0] = (4.055 * 10**8) / (newValue);
-        }
+  handleDistanceChange = (value) => {
+    const newValue = parseFloat(value.x);
+
+    this.setState({ sliderValue4 : newValue });
+    this.setState({ distanceMultiplier: newValue });
+
+    if (newValue === 1) {
+        this.objects[1].position[0] = 4.055 * 10**8;
+    } else if (newValue > 0) {
+        this.objects[1].position[0] = (4.055 * 10**8) * newValue;
+    } else if (newValue < 0) {
+        this.objects[1].position[0] = (4.055 * 10**8) / (newValue);
     }
+  }
 
   resetSimulation = () => {
     window.location.reload();
   }
 
   startSimulation = () => {
-    this.setState({ simulationStarted: true });
-  }
-
-  pauseSimulation = () => {
-    this.setState({ simulationStarted: false });
+    this.setState({ simulationStarted: !this.state.simulationStarted });
   }
 
   render() {
     return (
-      <div className="contain">
-        <div className="userParamsContainer">
-          <p>Start the simulation : <button onClick={this.startSimulation}>START</button></p>
-          <p>Pause the simulation : <button onClick={this.pauseSimulation}>PAUSE</button></p>
-          <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
-          <p>Multiplier for mass M1 : {(Math.round(this.state.sliderValue* 100) / 100).toFixed(2)}x the mass&nbsp;
-          </p>
-          <InputSlider
-              axis="x"
-              x={this.state.sliderValue}
-              xmin={0}
-              xmax={10}
-              xstep={0.1}
-              onChange={this.handleMass1Change}
-              id={this.state.massM1Multiplier}
-          />
-          <p>Multiplier for mass M2 : {(Math.round(this.state.massM2Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
-          </p>
-          <InputSlider
-              axis="x"
-              x={this.state.sliderValue2}
-              xmin={0}
-              xmax={10}
-              xstep={0.1}
-              onChange={this.handleMass2Change}
-              id={this.state.massM2Multiplier}
-          />
-          <p>Multiplier for velocity M2 : {(Math.round(this.state.velocityM2Multiplier* 100) / 100).toFixed(2)}x the velocity&nbsp;
-          </p>
-          <InputSlider
-              axis="x"
-              x={this.state.sliderValue3}
-              xmin={0}
-              xmax={10}
-              xstep={0.1}
-              onChange={this.handleM2VelocityChange}
-              id={this.state.velocityM2Multiplier}
-          />
-          <p>Initial distance between M1 & M2 : {(Math.round(this.state.distanceMultiplier * 100) / 100).toFixed(2)}x the distance&nbsp;
-          </p>
-          <InputSlider
-              axis="x"
-              x={this.state.sliderValue4}
-              xmin={0}
-              xmax={10}
-              xstep={0.1}
-              onChange={this.handleDistanceChange}
-              id={this.state.distanceMultiplier}
-          />
-        <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
-        </div>
+        <div>
+          {this.state.popUpActive && <div className="popUp"><h1>{this.state.popUpMessage}</h1></div>}
+          <div className="contain">
+            <div className="userParamsContainer">
+              <p>{this.state.simulationStarted ? "pause" : "start" } the simulation : <button onClick={this.startSimulation}>{this.state.simulationStarted ? "PAUSE" : "START" }</button></p>
+              <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
+              <p>Multiplier for mass M1 : {(Math.round(this.state.sliderValue* 100) / 100).toFixed(2)}x the mass&nbsp;
+              </p>
+              <InputSlider
+                  axis="x"
+                  x={this.state.sliderValue}
+                  xmin={0}
+                  xmax={10}
+                  xstep={0.1}
+                  onChange={this.handleMass1Change}
+                  id={this.state.massM1Multiplier}
+              />
+              <p>Multiplier for mass M2 : {(Math.round(this.state.massM2Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
+              </p>
+              <InputSlider
+                  axis="x"
+                  x={this.state.sliderValue2}
+                  xmin={0}
+                  xmax={10}
+                  xstep={0.1}
+                  onChange={this.handleMass2Change}
+                  id={this.state.massM2Multiplier}
+              />
+              <p>Multiplier for velocity M2 : {(Math.round(this.state.velocityM2Multiplier* 100) / 100).toFixed(2)}x the velocity&nbsp;
+              </p>
+              <InputSlider
+                  axis="x"
+                  x={this.state.sliderValue3}
+                  xmin={0}
+                  xmax={10}
+                  xstep={0.1}
+                  onChange={this.handleM2VelocityChange}
+                  id={this.state.velocityM2Multiplier}
+              />
+              <p>Initial distance between M1 & M2 : {(Math.round(this.state.distanceMultiplier * 100) / 100).toFixed(2)}x the distance&nbsp;
+              </p>
+              <InputSlider
+                  axis="x"
+                  x={this.state.sliderValue4}
+                  xmin={0}
+                  xmax={10}
+                  xstep={0.1}
+                  onChange={this.handleDistanceChange}
+                  id={this.state.distanceMultiplier}
+              />
+            <p>Rocket Propulsion: {this.state.propulsion ? "On" : "Off"}</p>
+            </div>
 
-        <Sketch setup={this.setup} draw={this.draw} />
-        <br></br>
-      </div>
+            <Sketch setup={this.setup} draw={this.draw} />
+            <br></br>
+          </div>
+        </div>
     );
   }
 }
