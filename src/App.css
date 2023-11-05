@@ -123,4 +123,5 @@ div > h1 {
   background: white;
   width: 100%;
   height: 20px;
+  transform: translateY(-85%);
 }
