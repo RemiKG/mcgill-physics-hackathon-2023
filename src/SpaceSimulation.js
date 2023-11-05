@@ -70,6 +70,18 @@ export default class SpaceSimulation extends Component {
     }
   };
   // Declare database!
+  /**
+   * Represents a database of space simulations.
+   * @typedef {Object[][]} SpaceSimulationDatabase
+   * @property {Object[]} simulation - An array of objects representing a space simulation.
+   * @property {string} simulation.name - The name of the celestial body.
+   * @property {number} simulation.mass - The mass of the celestial body in kg.
+   * @property {number[]} simulation.position - The position of the celestial body in meters.
+   * @property {number[]} simulation.velocity - The velocity of the celestial body in m/s.
+   * @property {number[]} simulation.acceleration - The acceleration of the celestial body in m/s^2.
+   * @property {number} simulation.diameter - The diameter of the celestial body in meters.
+   * @property {number[]} simulation.color - The color of the celestial body in RGB format.
+   */
   database = [
     [
       {
