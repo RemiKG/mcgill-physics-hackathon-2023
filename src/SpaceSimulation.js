@@ -94,21 +94,12 @@ export default class SpaceSimulation extends Component {
         "diameter": 1.7 * 10 ** 7,
         "image": p5.loadImage(moonImg)
       },
-      // {
-      //   "name": "rocket",
-      //   "mass": 10*4, // In kg
-      //   "position": [0, -7 * 10**7],
-      //   // "velocity": [-2040, 0],
-      //   "velocity": [2040, 0],
-      //   "acceleration": [0, 0],
-      //   "diameter": 5 * 10 ** 6
-      // }
       {
         "name": "rocket",
-        "mass": 10*4, // In kg
-        "position": [4.355 * 10**8, 0],
+        "mass": 1, // In kg
+        "position": [0, -8.429 * 10**7],
         // "velocity": [-2040, 0],
-        "velocity": [0, 1270],
+        "velocity": [2540, 0],
         "acceleration": [0, 0],
         "diameter": 5 * 10 ** 6,
         "image": p5.loadImage(rocketImg)
@@ -253,15 +244,22 @@ export default class SpaceSimulation extends Component {
         }
       }
       // Change velocity according to acceleration
-      this.objects[i]["velocity"][0] += this.objects[i]["acceleration"][0] * this.s_per_frame     
-      this.objects[i]["velocity"][1] += this.objects[i]["acceleration"][1] * this.s_per_frame     
+      this.objects[i]["velocity"][0] += this.objects[i]["acceleration"][0]*this.s_per_frame
+      this.objects[i]["velocity"][1] += this.objects[i]["acceleration"][1]*this.s_per_frame
+
+      //use next velocity to calculate position
+      this.objects[i]["position"][0] += this.objects[i]["velocity"][0]*this.s_per_frame
+      this.objects[i]["position"][1] += this.objects[i]["velocity"][1]*this.s_per_frame
 
 
-      this.objects[i]["position"][0] += this.objects[i]["velocity"][0] * this.s_per_frame      
-      this.objects[i]["position"][1] += this.objects[i]["velocity"][1] * this.s_per_frame 
-      
-      
-      if(i == 0){
+      this.prevax = this.objects[i]["acceleration"][0]
+      this.prevay = this.objects[i]["acceleration"][1]
+      // this.objects[i]["position"][0] += this.objects[i]["velocity"][0] * this.s_per_frame + this.objects[i]["acceleration"][0] * this.s_per_frame **2/2
+      // this.objects[i]["position"][1] += this.objects[i]["velocity"][1] * this.s_per_frame + this.objects[i]["acceleration"][0] * this.s_per_frame ** 2/2
+    }
+  
+
+      if(i === 0){
         p5.fill(0, 200, 200)
       } else if(i == 1){
         p5.fill(200, 0, 200)
