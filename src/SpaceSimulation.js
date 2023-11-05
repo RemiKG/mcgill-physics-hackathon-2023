@@ -61,7 +61,7 @@ export default class SpaceSimulation extends Component {
         // "velocity": [-2040, 0],
         "velocity": [2540, 0],
         "acceleration": [0, 0],
-        "diameter": 5 * 10 ** 6,
+        "diameter": 2 * 10 ** 7,
         "image": p5.loadImage(rocketImg)
       }
       // {
@@ -194,18 +194,22 @@ export default class SpaceSimulation extends Component {
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+      p5.circle((this.objects[i]["position"][0]) / this.m_per_pixel, (this.objects[i]["position"][1] )/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       
      
       // Rocket image
-      // let velocity = this.objects[i]["velocity"];
-      // let angle = Math.atan2(velocity[1], velocity[0]);
-      // p5.push();
-      // p5.translate((this.objects[i]["position"][0]- this.comX)/this.m_per_pixel, (this.objects[i]["position"][1]- this.comY)/this.m_per_pixel);
-      // p5.rotate(angle-12.5);
-      // p5.imageMode(p5.CENTER);
-      // p5.image(this.objects[i]["image"], -this.objects[i]["image"].width/2, -this.objects[i]["image"].height/2);
-      // p5.pop();  
+      let velocity = this.objects[i]["velocity"];
+      let angle = Math.atan2(velocity[1], velocity[0]);
+      p5.push();
+      p5.translate((this.objects[i]["position"][0]/this.m_per_pixel), (this.objects[i]["position"][1] /this.m_per_pixel))
+      p5.rotate(angle+p5.PI/4);
+      let scaleFactor = this.objects[i]["diameter"]/ this.m_per_pixel / this.objects[i]["image"].width
+      p5.scale(scaleFactor)
+      p5.imageMode(p5.CENTER);
+      let rotatedcomX = (this.comX) / this.m_per_pixel*Math.cos(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4)
+      let rotatedcomY = - (this.comY) / this.m_per_pixel*Math.sin(angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.cos(angle+p5.PI/4)
+      p5.image(this.objects[i]["image"], - rotatedcomX, - rotatedcomY);
+      p5.pop(); 
             
       // Monitor total energy : Energy = Kinetic energy + Potential energy
       //   if(i==0){
