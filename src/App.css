@@ -91,6 +91,7 @@ div > h1 {
   text-align: center;
   padding: 50px; /* Add padding to create some space from the top and left edges */
   padding-top: 10px;
+  font-size: 20px;
   /* padding-left: 100px; */
 }
 /* .userParamsContainer:hover{
@@ -105,7 +106,7 @@ div > h1 {
 .button{
   background-color: rgb(50, 224, 255);
   cursor: pointer !important;
-  color:white;
+  color:black;
   padding: 20px 40px 20px 40px;
   border: none;
   margin: 10px;
