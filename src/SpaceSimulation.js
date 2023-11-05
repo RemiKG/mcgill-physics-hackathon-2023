@@ -170,18 +170,18 @@ export default class SpaceSimulation extends Component {
     }
     p5.noStroke();
     if (!this.state.simulationStarted) {
-      p5.translate(this.width/2, this.height/2);
+      p5.translate(this.width / 2, this.height / 2);
       p5.fill(25, 25, 25, 35)
-      p5.rect(-this.width/2, -this.height/2, this.width, this.height)
+      p5.rect(-this.width / 2, -this.height / 2, this.width, this.height)
 
-      for(let i = 0; i < this.objects.length; i++){
+      for (let i = 0; i < this.objects.length; i++) {
 
         this.temp1 = this.objects[i]["position"][0]
         this.temp2 = this.objects[i]["position"][1]
 
-        if(i == 0){
+        if (i == 0) {
           p5.fill(0, 200, 200)
-        } else if(i == 1){
+        } else if (i == 1) {
           p5.fill(200, 0, 200)
         } else {
           p5.fill(255, 0, 0)
@@ -189,7 +189,7 @@ export default class SpaceSimulation extends Component {
         this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
         this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-        p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+        p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY) / this.m_per_pixel, this.objects[i]["diameter"] / this.m_per_pixel)
       }
 
       p5.fill(255, 255, 255)
@@ -198,23 +198,23 @@ export default class SpaceSimulation extends Component {
     this.kinetic = 0
     this.potential = 0
     this.t += 1;
-    p5.translate(this.width/2, this.height/2); 
-    
+    p5.translate(this.width / 2, this.height / 2);
+
     p5.noStroke();
     p5.frameRate(this.fr);
-  
-    p5.background(25, 25, 250,0.99);
+
+    p5.background(25, 25, 250, 0.99);
     p5.fill(25, 25, 25, 35)
-    p5.rect(-this.width/2, -this.height/2, this.width, this.height)
+    p5.rect(-this.width / 2, -this.height / 2, this.width, this.height)
 
     // console.log(this.objects.length)
 
     // Set Acceleration according to gravity
-    for(let i = 0; i < this.objects.length; i++){ 
-      this.objects[i]["acceleration"][0] = 0      
-      this.objects[i]["acceleration"][1] = 0      
+    for (let i = 0; i < this.objects.length; i++) {
+      this.objects[i]["acceleration"][0] = 0
+      this.objects[i]["acceleration"][1] = 0
       for (let j = 0; j < this.objects.length; j++) {
-        if(j !== i){
+        if (j !== i) {
           this.d_x = this.objects[j]["position"][0] - this.objects[i]["position"][0]
           this.d_y = this.objects[j]["position"][1] - this.objects[i]["position"][1]
           this.r = Math.sqrt(Math.pow(this.d_x, 2) + Math.pow(this.d_y, 2))
@@ -222,19 +222,19 @@ export default class SpaceSimulation extends Component {
           // this.total_a = (this.objects[j]["mass"] * 6.6743)
           // console.log(this.total_a)
           this.objects[i]["acceleration"][0] += this.total_a * this.d_x / (this.r)
-          this.objects[i]["acceleration"][1] += this.total_a * this.d_y / (this.r) 
+          this.objects[i]["acceleration"][1] += this.total_a * this.d_y / (this.r)
         }
       }
       // ROCKET PROPULSION CALCULATION
-      if(this.objects[i]["name"] === "rocket"){
+      if (this.objects[i]["name"] === "rocket") {
         // console.log(this.state.propulsion)
-        if(this.state.propulsion){
+        if (this.state.propulsion) {
           console.log("PROPULSE!")
-          this.tot_v = Math.sqrt(this.objects[i]["velocity"][0]**2 + this.objects[i]["velocity"][1] **2 )
+          this.tot_v = Math.sqrt(this.objects[i]["velocity"][0] ** 2 + this.objects[i]["velocity"][1] ** 2)
           this.d_vx = this.objects[i]["velocity"][0] / this.tot_v
           this.d_vy = this.objects[i]["velocity"][1] / this.tot_v
           console.log(this.rocket_mu)
-          this.objects[i]["mass"] -= this.rocket_mu /this.s_per_frame
+          this.objects[i]["mass"] -= this.rocket_mu / this.s_per_frame
           console.log(this.objects[i]["mass"])
           this.rocketAcceleration = this.rocket_u * this.rocket_mu / this.objects[i]["mass"];
 
@@ -244,24 +244,23 @@ export default class SpaceSimulation extends Component {
         }
       }
       // Change velocity according to acceleration
-      this.objects[i]["velocity"][0] += this.objects[i]["acceleration"][0]*this.s_per_frame
-      this.objects[i]["velocity"][1] += this.objects[i]["acceleration"][1]*this.s_per_frame
+      this.objects[i]["velocity"][0] += this.objects[i]["acceleration"][0] * this.s_per_frame
+      this.objects[i]["velocity"][1] += this.objects[i]["acceleration"][1] * this.s_per_frame
 
       //use next velocity to calculate position
-      this.objects[i]["position"][0] += this.objects[i]["velocity"][0]*this.s_per_frame
-      this.objects[i]["position"][1] += this.objects[i]["velocity"][1]*this.s_per_frame
+      this.objects[i]["position"][0] += this.objects[i]["velocity"][0] * this.s_per_frame
+      this.objects[i]["position"][1] += this.objects[i]["velocity"][1] * this.s_per_frame
 
 
       this.prevax = this.objects[i]["acceleration"][0]
       this.prevay = this.objects[i]["acceleration"][1]
       // this.objects[i]["position"][0] += this.objects[i]["velocity"][0] * this.s_per_frame + this.objects[i]["acceleration"][0] * this.s_per_frame **2/2
       // this.objects[i]["position"][1] += this.objects[i]["velocity"][1] * this.s_per_frame + this.objects[i]["acceleration"][0] * this.s_per_frame ** 2/2
-    }
-  
 
-      if(i === 0){
+
+      if (i === 0) {
         p5.fill(0, 200, 200)
-      } else if(i == 1){
+      } else if (i == 1) {
         p5.fill(200, 0, 200)
       } else {
         // p5.fill(255, 0, 0)
@@ -270,7 +269,7 @@ export default class SpaceSimulation extends Component {
       this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
       this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
+      p5.circle((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["position"][1] - this.comY) / this.m_per_pixel, this.objects[i]["diameter"] / this.m_per_pixel)
 
 
       // Rocket image
@@ -297,14 +296,15 @@ export default class SpaceSimulation extends Component {
       //       this.objects[0]['mass'],
       //       this.r)
 
-      this.kinetic += this.objects[i]["mass"] * (this.objects[i]["velocity"][0] **2 + this.objects[i]["velocity"][1]**2)/2
+      this.kinetic += this.objects[i]["mass"] * (this.objects[i]["velocity"][0] ** 2 + this.objects[i]["velocity"][1] ** 2) / 2
       // console.log(this.kinetic)
     }
 
-    this.potential = -this.objects[0]["mass"] * this.objects[1]["mass"] * 6.6743 * Math.pow(10, -11) / Math.sqrt((this.objects[0]["position"][0] - this.objects[1]["position"][0])**2 + (this.objects[0]["position"][1] - this.objects[1]["position"][1])**2)
+    this.potential = -this.objects[0]["mass"] * this.objects[1]["mass"] * 6.6743 * Math.pow(10, -11) / Math.sqrt((this.objects[0]["position"][0] - this.objects[1]["position"][0]) ** 2 + (this.objects[0]["position"][1] - this.objects[1]["position"][1]) ** 2)
     //console.log(this.kinetic + this.potential)
     p5.fill(255, 255, 255)
   };
+
 
 
   handleMass1Change = (value) => {
