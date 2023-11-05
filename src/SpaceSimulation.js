@@ -87,7 +87,7 @@ export default class SpaceSimulation extends Component {
 
         "velocity": [0, 970],
         "acceleration": [0, 0],
-        "diameter": 1.7 * 10 ** 7,
+        "diameter": 3 * 10 ** 7,
         "color": [200, 0, 200],
 
       },
@@ -99,7 +99,7 @@ export default class SpaceSimulation extends Component {
         // "velocity": [-2040, 0],
         "velocity": [0, 1370],
         "acceleration": [0, 0],
-        "diameter": 5 * 10 ** 7,
+        "diameter": 1.5 * 10 ** 7,
         "color": [255, 255, 0],
 
       }
@@ -125,7 +125,7 @@ export default class SpaceSimulation extends Component {
 
         "velocity": [0, 970],
         "acceleration": [0, 0],
-        "diameter": 1.7 * 10 ** 7,
+        "diameter": 3 * 10 ** 7,
         "color": [200, 0, 200]
 
       },
@@ -243,11 +243,6 @@ export default class SpaceSimulation extends Component {
         this.comX = (this.objects[0]["position"][0] * this.objects[0]["mass"] + this.objects[1]["position"][0] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
         this.comY = (this.objects[0]["position"][1] * this.objects[0]["mass"] + this.objects[1]["position"][1] * this.objects[1]["mass"]) / (this.objects[0]["mass"] + this.objects[1]["mass"])
 
-        this.velocity = this.objects[i]["velocity"];
-        this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
-        p5.push();
-        p5.translate((this.objects[i]["position"][0]/this.m_per_pixel), (this.objects[i]["position"][1] /this.m_per_pixel))
-        p5.rotate(this.angle+p5.PI/4);
         this.makeImage = true
         if(this.objects[i]["name"] === "rocket"){
           this.selectedImage = this.state.images[0];
@@ -259,17 +254,23 @@ export default class SpaceSimulation extends Component {
           this.selectedImage = this.state.images[2];         
         } else{
           this.makeImage = false
-          // if (this.state.centerFrame) {
-          //   p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
-          // } else {
-          //   p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
-          // }
+          if (this.state.centerFrame) {
+            p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+          } else {
+            p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+          }
         }
-        // console.log(this.state.imges)
-        // this.selectedImage = this.state.images[2]
         if(this.makeImage){ 
+          this.velocity = this.objects[i]["velocity"];
+          this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
+          p5.push();
+          
+          p5.translate((this.objects[i]["position"][0] / this.m_per_pixel), (this.objects[i]["position"][1] / this.m_per_pixel))
           this.scaleFactor = this.objects[i]["diameter"] / this.m_per_pixel / this.selectedImage.width
           p5.scale(this.scaleFactor)
+          p5.rotate(this.angle + p5.PI / 4);
+          
+          //  Here
           p5.imageMode(p5.CENTER);
           this.rotatedcomX = (this.comX) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
           this.rotatedcomY = - (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
@@ -401,22 +402,15 @@ export default class SpaceSimulation extends Component {
       // p5.circle((this.objects[i]["position"][0]) / this.m_per_pixel, (this.objects[i]["position"][1] )/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
       
       
-      if (this.state.centerFrame) {
-        p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
-      } else {
-        p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
-      }
+      // if (this.state.centerFrame) {
+      //   p5.circle(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel), ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+      // } else {
+      //   p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
+      // }
       
 
       // p5.circle((this.objects[i]["prev-position"][0] - this.comX) / this.m_per_pixel, (this.objects[i]["prev-position"][1] - this.comY)/ this.m_per_pixel, this.objects[i]["diameter"]/ this.m_per_pixel)
 
-
-      // Rocket image
-        this.velocity = this.objects[i]["velocity"];
-        this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
-        p5.push();
-        p5.translate((this.objects[i]["position"][0]/this.m_per_pixel), (this.objects[i]["position"][1] /this.m_per_pixel))
-        p5.rotate(this.angle+p5.PI/4);
         this.makeImage = true
         if(this.objects[i]["name"] === "rocket"){
           this.selectedImage = this.state.images[0];
@@ -434,18 +428,40 @@ export default class SpaceSimulation extends Component {
             p5.circle(((this.objects[i]["position"][0]) / this.m_per_pixel), ((this.objects[i]["position"][1]) / this.m_per_pixel), this.objects[i]["diameter"] / this.m_per_pixel)
           }
         }
-        // console.log(this.state.imges)
-        // this.selectedImage = this.state.images[2]
         if(this.makeImage){ 
-        this.scaleFactor = this.objects[i]["diameter"]/ this.m_per_pixel / this.selectedImage.width
-        p5.scale(this.scaleFactor)
-        p5.imageMode(p5.CENTER);
-        this.rotatedcomX = (this.comX) / this.m_per_pixel*Math.cos(this.angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.sin(this.angle+p5.PI/4)
-        this.rotatedcomY = - (this.comY) / this.m_per_pixel*Math.sin(this.angle+p5.PI/4) + (this.comY) / this.m_per_pixel*Math.cos(this.angle+p5.PI/4)
-        p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
-        p5.pop();
+          this.velocity = this.objects[i]["velocity"];
+          if(i !== 0){
+            this.angle = Math.atan2(this.velocity[1], this.velocity[0]);
 
-        } else{
+          }else{
+            
+            this.angle = Math.atan2(this.objects[0]["position"][1] - this.objects[1]["position"][1], this.objects[0]["position"][0] - this.objects[1]["position"][0]);
+          }
+          
+          p5.push();
+          
+          
+          this.scaleFactor = this.objects[i]["diameter"] / this.m_per_pixel / this.selectedImage.width
+          this.scaleFactor2 = this.objects[i]["diameter"] / this.m_per_pixel / this.selectedImage.height
+          if(this.state.centerFrame){
+            p5.translate(((this.objects[i]["position"][0] - this.comX) / this.m_per_pixel) , ((this.objects[i]["position"][1] - this.comY) / this.m_per_pixel))
+          } else{
+            p5.translate((this.objects[i]["position"][0] / this.m_per_pixel) , ((this.objects[i]["position"][1]) / this.m_per_pixel))
+          }
+          
+          p5.scale(this.scaleFactor)
+          p5.rotate(this.angle + p5.PI / 4);
+          p5.imageMode(p5.CENTER);
+          if(this.state.centerFrame){
+            this.rotatedcomX = (this.comX) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
+            this.rotatedcomY = - (this.comY) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.comY) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)  
+          } else {
+            this.rotatedcomX = (this.width / 2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4) + (this.width / 2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4)
+            this.rotatedcomY = - (this.height / 2) / this.m_per_pixel * Math.sin(this.angle + p5.PI / 4) + (this.height / 2) / this.m_per_pixel * Math.cos(this.angle + p5.PI / 4)
+          }
+          p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
+          
+          p5.pop();
 
         }
             
