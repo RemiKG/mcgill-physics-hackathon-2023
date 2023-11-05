@@ -224,12 +224,15 @@ export default class SpaceSimulation extends Component {
     this.drawStars(p5);
     // this.comX = 0;
     // this.comY = 0;
+
+    this.t = 0;
   };
 
 
   draw = p5 => {
     this.moveStars(p5);
     this.drawStars(p5);
+    this.t += this.s_per_frame;
 
     p5.noStroke();
     if (!this.state.simulationStarted) {
@@ -296,7 +299,7 @@ export default class SpaceSimulation extends Component {
           p5.image(this.selectedImage, - this.rotatedcomX, - this.rotatedcomY);
           p5.pop();
 
-        this.current_distance = sqrt((this.objects[0]["position"][0]-this.objects[2]["position"][0])**2+(this.objects[0]["position"][1]-this.objects[2]["position"][1])**2)
+        this.current_distance = Math.sqrt((this.objects[0]["position"][0]-this.objects[2]["position"][0])**2+(this.objects[0]["position"][1]-this.objects[2]["position"][1])**2)
         // Find Aphelion
         if (this.aphelion < this.current_distance){
           this.aphelion = this.current_distance
@@ -308,6 +311,34 @@ export default class SpaceSimulation extends Component {
         }
 
 
+        }
+
+        
+        // if (this.objects[i]["position"][1] == 0) {
+        //   period = this.s_per_frame - 0
+        // }
+        // distance = []
+        // while (this.s_per_frame % period < period) {
+        //   distance.push((this.objects[2]["position"][0] - this.objects[0]["position"][0] ** 2 + this.objects[2]["position"][1] - this.objects[0]["position"][1] ** 2)**0.5)
+        // }
+        // Math.max(distance)
+
+        
+        this.v_e = (this.objects[2]["velocity"][0]**2 + this.objects[2]["velocity"][1]**2)**0.5 - this.v1
+        this.v_add = (6.67 * 10 ** -11 * this.objects[0]["mass"] / this.perihelim) ** 0.5 * (2 * this.perihelim / (this.perihelim + this.rwikitwo)) - this.v_e
+        this.t_acc = this.v_add / this.rocketAcceleration
+        this.t_i = this.t
+        while(this.t - this.t_i <= this.t_acc){
+          this.tot_v = Math.sqrt(this.objects[i]["velocity"][0] ** 2 + this.objects[i]["velocity"][1] ** 2)
+          this.d_vx = this.objects[i]["velocity"][0] / this.tot_v
+          this.d_vy = this.objects[i]["velocity"][1] / this.tot_v
+          // console.log(this.rocket_mu)
+          this.objects[i]["mass"] -= this.rocket_mu / this.s_per_frame
+          // console.log(this.objects[i]["mass"])
+          this.rocketAcceleration = this.rocket_u * this.rocket_mu / this.objects[i]["mass"];
+
+          this.objects[i]["velocity"][0] += this.rocketAcceleration * this.d_vx
+          this.objects[i]["velocity"][1] += this.rocketAcceleration * this.d_vy
         }
       }
 
