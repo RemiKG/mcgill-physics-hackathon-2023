@@ -225,6 +225,8 @@ export default class SpaceSimulation extends Component {
           this.objects[i]["acceleration"][1] += this.total_a * this.d_y / (this.r)
         }
       }
+
+      ///adssadad
       // ROCKET PROPULSION CALCULATION
       if (this.objects[i]["name"] === "rocket") {
         // console.log(this.state.propulsion)
