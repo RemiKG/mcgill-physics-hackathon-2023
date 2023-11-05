@@ -143,7 +143,7 @@ export default class SpaceSimulation extends Component {
         "diameter": 2.5 * 10 ** 7
       }
     ],
-    [
+[
       {
         "name": "",
         "mass": 6 * 10 ** 24, // In kg
@@ -173,6 +173,66 @@ export default class SpaceSimulation extends Component {
         "acceleration": [0, 0],
         "diameter": 7 * 10 ** 7,
         "color": [0, 200, 200],
+
+      },
+      {
+        "name": "rocket",
+        "mass": 10 * 4, // In kg
+        "position": [5*10**8, 0],
+        "velocity": [0, 1740],
+        "acceleration": [0, 0],
+        "color": [255, 255, 0],
+        "diameter": 2.5 * 10 ** 7
+
+      }
+    ],
+    [
+      
+       
+               {
+        "name": "",
+        "mass": 6 * 10 ** 24, // In kg
+        "position": [0, 0],
+
+        "velocity": [0, 0],
+        "acceleration": [0, 0],
+        "diameter": 7 * 10 ** 7,
+        "color": [200, 200, 0],
+
+      },
+      {
+        "name": "M1",
+        // "mass": 7.35 * 10 ** 22, // In kg
+        "mass": 11.35 * 10 ** 22, // In kg
+        "position": [4.055 * 10 ** 8, 0],
+
+        "velocity": [0, 970],
+        "acceleration": [0, 0],
+        "diameter": 3 * 10 ** 7,
+        "color": [200, 0, 200],
+
+      },
+      {
+        "name": "",
+        // "mass": 7.35 * 10 ** 22, // In kg
+        "mass": 6.35 * 10 ** 22, // In kg
+        "position": [-1.655 * 10 ** 8, 0],
+
+        "velocity": [0, -1400],
+        "acceleration": [0, 0],
+        "diameter": 2 * 10 ** 7,
+        "color": [200, 0, 0],
+      },
+      {
+        "name": "M2",
+        "mass": 10 * 4, // In kg
+        "position": [4.355 * 10 ** 8, 0],
+
+        // "velocity": [-2040, 0],
+        "velocity": [0, 1470],
+        "acceleration": [0, 0],
+        "diameter": 1 * 10 ** 7,
+        "color": [255, 255, 0],
 
       }
     ]
@@ -625,7 +685,7 @@ export default class SpaceSimulation extends Component {
             </div>
             {/* {this.database ? this.Button() : <div>wait</div>} */}
 
-              <p>{this.state.simulationStarted ? "pause" : "start" } the simulation : <button onClick={this.startSimulation}>{this.state.simulationStarted ? "PAUSE" : "START" }</button></p>
+              <p>{this.state.simulationStarted ? "Pause" : "Start" } the simulation : <button onClick={this.startSimulation}>{this.state.simulationStarted ? "PAUSE" : "START" }</button></p>
               <p>Refresh the simulation : <button onClick={this.resetSimulation}>RESET</button></p>
             <p>Zoom the scope of the simulation: {((Math.round(this.state.zoomFactor * 100) / 100).toFixed(2))}x</p>
             <InputSlider
