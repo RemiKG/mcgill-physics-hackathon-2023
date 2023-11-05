@@ -17,6 +17,7 @@ export default class SpaceSimulation extends Component {
       massM2Multiplier: 1, // Multiplier to change mass of M2
       velocityM2Multiplier: 1, // Multiplier to change velocity of M2
       distanceMultiplier: 1, // Multiplier to change distance between M1 and M2
+      timeFactor: 1,
       simulationStarted: false,
       propulsion: false,
       centerFrame: false,
@@ -146,9 +147,19 @@ export default class SpaceSimulation extends Component {
       {
         "name": "",
         "mass": 6 * 10 ** 24, // In kg
-        "position": [0, 0],
+        "position": [0.746 * 4*10**8, 0],
 
-        "velocity": [0, 0],
+        "velocity": [0, 0.325*1732],
+        "acceleration": [0, 0],
+        "diameter": 7 * 10 ** 7,
+        "color": [0, 200, 200],
+
+      },{
+        "name": "",
+        "mass": 6 * 10 ** 24, // In kg500
+        "position": [-0.373 * 4 * 10**8, 0.238 * 4 * 10**8],
+
+        "velocity": [0.764 * 1732, -0.162 * 1732],
         "acceleration": [0, 0],
         "diameter": 7 * 10 ** 7,
         "color": [0, 200, 200],
@@ -157,23 +168,12 @@ export default class SpaceSimulation extends Component {
       {
         "name": "",
         "mass": 6 * 10 ** 24, // In kg
-        // "mass": 11.35 * 10 ** 22, // In kg
-        "position": [4.055 * 10 ** 8, 0],
-
-        "velocity": [0, 970],
+        "position": [4*10**8 * -0.37, -0.23 * 4 * 10**8],
+        "velocity": [-0.76*1732, -0.16*1732],
         "acceleration": [0, 0],
         "diameter": 7 * 10 ** 7,
-        "color": [200, 0, 200]
+        "color": [0, 200, 200],
 
-      },
-      {
-        "name": "",
-        "mass": 7.35 * 10 ** 22, // In kg
-        "position": [0, -7 * 10 ** 7],
-        "velocity": [2040, 0],
-        "acceleration": [0, 0],
-        "color": [255, 255, 0],
-        "diameter": 7 * 10 ** 7
       }
     ]
   ]
@@ -203,7 +203,7 @@ export default class SpaceSimulation extends Component {
 
 
     this.s_per_frame = 10 ** (3);
-    // this.s_per_frame = 10 ** (2);
+    
 
     this.m_per_pixel = 1.3 * 10 ** 6;
 
@@ -365,12 +365,12 @@ export default class SpaceSimulation extends Component {
         }
       }
       // Change velocity according to acceleration
-      this.objects[i]["velocity"][0] += this.objects[i]["acceleration"][0] * this.s_per_frame
+      this.objects[i]["velocity"][0] += this.objects[i]["acceleration"][0] * this.s_per_frame    
       this.objects[i]["velocity"][1] += this.objects[i]["acceleration"][1] * this.s_per_frame
 
       //use next velocity to calculate position
-      this.objects[i]["position"][0] += this.objects[i]["velocity"][0] * this.s_per_frame
-      this.objects[i]["position"][1] += this.objects[i]["velocity"][1] * this.s_per_frame
+      this.objects[i]["position"][0] += this.objects[i]["velocity"][0] * this.s_per_frame 
+      this.objects[i]["position"][1] += this.objects[i]["velocity"][1] * this.s_per_frame 
 
       if (this.state.infiniSpace) {
         this.tempWidth = this.width * this.m_per_pixel
@@ -572,6 +572,19 @@ export default class SpaceSimulation extends Component {
     }
 
   }
+
+  handleTime = (value) => {
+    const newValue = parseFloat(value.x);
+    this.setState({ timeFactor: newValue })
+
+    if (newValue === 1) {
+      this.s_per_frame = 10 ** (3);
+    } else if (newValue > 0) {
+      this.s_per_frame = (10 ** (3)) * newValue;
+    } else if (newValue < 0) {
+      this.s_per_frame = (10 ** (3)) / (newValue);
+    }
+  }
   // getRocket = () => {
   //   this.rocketPotential = 0 // Over m
   //   for (let i = 0; i < this.objects.length; i++) {
@@ -640,6 +653,16 @@ export default class SpaceSimulation extends Component {
               xstep={0.1}
               onChange={this.handleZoom}
               id={this.state.zoomFactor}
+            />
+            <p>Time Scale: {((Math.round(this.state.timeFactor * 100) / 100).toFixed(2))}x</p>
+            <InputSlider
+              axis="x"
+              x={this.state.timeFactor}
+              xmin={0}
+              xmax={10}
+              xstep={0.1}
+              onChange={this.handleTime}
+              id={this.state.timeFactor}
             />
             <p>Multiplier for mass M1 : {(Math.round(this.state.massM1Multiplier * 100) / 100).toFixed(2)}x the mass&nbsp;
             </p>
